@@ -1,6 +1,8 @@
-= ARK: Survival Evolved Linux Server Tools
+= ATLAS Linux Server Tools
 
-This tool allows you to manage any ARK: Survival Evolved linux server without having to remember long commands.
+(Work in progress)
+
+This tool allows you to manage any ATLAS linux server without having to remember long commands.
 It provides a lot of features, to get the full list check the <<Usage>> section.
 
 Installation
@@ -9,7 +11,7 @@ Installation
 Prerequisites
 ~~~~~~~~~~~~~
 
-ARK Server Tools requires certain packages be installed in order to function correctly.
+ATLAS Server Tools requires certain packages be installed in order to function correctly.
 
 If running under CentOS or RHEL, you will need the following packages installed:
 ```
@@ -46,94 +48,93 @@ tar
 If using CentOS 6 or earlier, or Debian 7 or earlier, you will need to compile a newer version of glibc.
 See https://github.com/FezVrasta/ark-server-tools/wiki/Install-of-required-versions-of-glibc-and-gcc-on-RHEL-CentOS
 
-To use ARK Server Tools, you will need to install **SteamCMD** following this guide:
+To use ATLAS Server Tools, you will need to install **SteamCMD** following this guide:
 
 https://developer.valvesoftware.com/wiki/SteamCMD#Linux
 
-We assume you have created the `steam` user to store steamcmd and your ARK server.
+We assume you have created the `steam` user to store steamcmd and your ATLAS server.
 
 Requirements
 ~~~~~~~~~~~~
 
-To allow your ARK server to communicate with the outside you have to open some ports in your firewall:
+To allow your ATLAS server to communicate with the outside you have to open some ports in your firewall:
 
 ```sh
-iptables -I INPUT -p udp --dport 27016 -j ACCEPT
-iptables -I INPUT -p tcp --dport 27016 -j ACCEPT
-iptables -I INPUT -p udp --dport 7778 -j ACCEPT
-iptables -I INPUT -p tcp --dport 7778 -j ACCEPT
-iptables -I INPUT -p tcp --dport 32330 -j ACCEPT
+iptables -I INPUT -p udp --match multiport --dport 57550,57551,57552,57553 -j ACCEPT
+iptables -I INPUT -p tcp --match multiport --dport 57550,57551,57552,57553 -j ACCEPT
+iptables -I INPUT -p udp --match multiport --dport 5750,5751,5752,5753 -j ACCEPT
+iptables -I INPUT -p tcp --match multiport --dport 5750,5751,5752,5753 -j ACCEPT
 ```
 
-NB: Change the ports according to the ones set in your `arkmanager.cfg` file.
+NB: Change the ports according to the ones set in your `atlasmanager.cfg` file.
 
-Install ARK Server Tools
+Install ATLAS Server Tools
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-To install ARK Server Tools run this command:
+To install ATLAS Server Tools run this command:
 
 [source,sh]
 curl -sL http://git.io/vtf5N | sudo bash -s steam
 
 NB: You may want to change the `bash -s` parameter to fit your steam user if different from `steam`.
 
-This will copy the `arkmanager` script and its daemon to the proper directories and will create an empty log directory in `/var/log` for ARK Server Tools.
+This will copy the `atlasmanager` script and its daemon to the proper directories and will create an empty log directory in `/var/log` for ATLAS Server Tools.
 
-To instead perform a user-install of ARK Server Tools as an unprivileged user, run this command:
+To instead perform a user-install of ATLAS Server Tools as an unprivileged user, run this command:
 
 [source,sh]
-curl -sL http://git.io/vtf5N | bash -s -- --me
+curl -sL https://git.io/fh4y4 | bash -s -- --me
 
 Configuration
 ~~~~~~~~~~~~~
 
-Stored in `/etc/arkmanager/arkmanager.cfg` and `/etc/arkmanager/instances/<instancename>.cfg` you can find the variables needed to start the server, like the port numbers, the system environment variables and so on.
+Stored in `/etc/atlasmanager/atlasmanager.cfg` and `/etc/atlasmanager/instances/<instancename>.cfg` you can find the variables needed to start the server, like the port numbers, the system environment variables and so on.
 
 You will need to modify these files with any options you wish to give to the server, and any
 paths that are non-standard in your environment (e.g. one common one is the path to the appinfo cache).
 
 See <<Configuration files>> for options.
 
-Also, in these files, you can specify any parameter you want to add to the startup command of ARK server.
-These parameters must be prefixed by the `ark_` string, some example could be:
+Also, in these files, you can specify any parameter you want to add to the startup command of ATLAS server.
+These parameters must be prefixed by the `atlas_` string, some example could be:
 
 [source,sh]
-ark_SessionName="My ARK server"
-ark_MaxPlayers=50
-ark_ServerPVE=False
-ark_DifficultyOffset=1
+atlas_SessionName="My ATLAS server"
+atlas_MaxPlayers=50
+atlas_ServerPVE=False
+atlas_DifficultyOffset=1
 
-Your session name may not contain special characters (eg. `!![EU]!! Aw&some ARK`) as it could break the startup command.
-In this case you may want to comment out the `ark_SessionName` variable and define it inside your **GameUserSettings.ini** file instead.
+Your session name may not contain special characters (eg. `!![EU]!! Aw&some ATLAS`) as it could break the startup command.
+In this case you may want to comment out the `atlas_SessionName` variable and define it inside your **GameUserSettings.ini** file instead.
 
-To specify an option without an argument (e.g. `bRawSockets`), specify an empty argument (e.g. `ark_bRawSockets=""`).
+To specify an option without an argument (e.g. `bRawSockets`), specify an empty argument (e.g. `atlas_bRawSockets=""`).
 
-To specify a dash-option without an argument (e.g. `-log`), add the option="" prefixed with `arkflag_` (e.g. `arkflag_log=""`).
+To specify a dash-option without an argument (e.g. `-log`), add the option="" prefixed with `atlasflag_` (e.g. `atlasflag_log=""`).
 
-To specify a dash-option with an argument (e.g. `-StructureDestructionTag=DestroySwampSnowStructures`), add the option=value prefixed with `arkopt_` (e.g. `arkopt_StructureDestructionTag=DestroySwampSnowStructures`).
+To specify a dash-option with an argument (e.g. `-StructureDestructionTag=DestroySwampSnowStructures`), add the option=value prefixed with `atlasopt_` (e.g. `atlasopt_StructureDestructionTag=DestroySwampSnowStructures`).
 
-You can override or add variables for a specific system user creating a file called `.arkmanager.cfg` in the home directory of the system user.
+You can override or add variables for a specific system user creating a file called `.atlasmanager.cfg` in the home directory of the system user.
 
 Each server instance must have its own set of ports.
-These ports are specified using the `ark_Port`, `ark_QueryPort` and `ark_RCONPort` settings in the instance configuration.
+These ports are specified using the `atlas_Port`, `atlas_QueryPort` and `atlas_RCONPort` settings in the instance configuration.
 If the QueryPort or Port settings are shared between multiple instances, then the server will often either crash or hang
 without being able to be queried.
 If the RCONPort setting is shared between multiple instances, the server will hang at 0/0 players.
 
 See <<Configuration files>> for more options.
 
-Install ARK Server
+Install ATLAS Server
 ~~~~~~~~~~~~~~~~~~
 
-To install ARK Server just run this command as normal user:
+To install ATLAS Server just run this command as normal user:
 
 [source,sh]
-arkmanager install
+atlasmanager install
 
 Usage
 -----
 
-`arkmanager [Global Options] <command> [Command Options] [Command Args] [Instances]`
+`atlasmanager [Global Options] <command> [Command Options] [Command Args] [Instances]`
 
 Global Options
 ~~~~~~~~~~~~~~
@@ -143,7 +144,7 @@ Global Options
     Prints some help on using the command
 
 `--version`::
-    Prints the arkmanager version
+    Prints the atlasmanager version
 
 Common Options
 ~~~~~~~~~~~~~~
@@ -163,10 +164,10 @@ Instanceless commands
 
 [horizontal]
 `upgrade-tools`::
-    Upgrades the ARK server tools to the latest version
+    Upgrades the ATLAS server tools to the latest version
 
 `uninstall-tools`::
-    Uninstalls the ARK server tools
+    Uninstalls the ATLAS server tools
 
 `list-instances`::
     Lists the available instances
@@ -225,10 +226,10 @@ instances.
 
 `install`::
     Downloads and installs (or validates an existing install) of
-    the ARK server
+    the ATLAS server
 
 `update`::
-    Updates an install of the ARK server (or installs it if it's
+    Updates an install of the ATLAS server (or installs it if it's
     not already installed)
 
     `--force`;;
@@ -246,7 +247,7 @@ instances.
         Only updates the server when nobody is connected
 
     `--validate`;;
-        Re-validates the ARK server install
+        Re-validates the ATLAS server install
 
     `--saveworld`;;
         Saves the world using `saveworld` - usually not
@@ -280,7 +281,7 @@ instances.
     the `--warn` option
 
 `checkupdate`::
-    Checks if an ARK server update is available
+    Checks if an ATLAS server update is available
 
     Exit status;;
         - 0: No update is available
@@ -328,7 +329,7 @@ instances.
 
 `enablemod <modnum>`::
 `enablemod <modnum>=<modtype>`::
-    Enables the `arkmod_<modnum>` setting in the instance config.
+    Enables the `atlasmod_<modnum>` setting in the instance config.
     modtype defaults to `game`.
     Mod types:
 
@@ -362,7 +363,7 @@ instances.
     webhook
 
 `status`::
-    Prints the status of the ARK server
+    Prints the status of the ATLAS server
 
 `install-cronjob <command>`::
     Installs a cron job that executes the specified command.
@@ -410,16 +411,16 @@ Configuration files
 Global configuration
 ~~~~~~~~~~~~~~~~~~~~
 
-Global configuration is stored in `/etc/arkmanager/arkmanager.cfg`
-and/or `~/.arkmanager.cfg`.
+Global configuration is stored in `/etc/atlasmanager/atlasmanager.cfg`
+and/or `~/.atlasmanager.cfg`.
 
 The following options cannot be overridden in the instance config
 files:
 
 [horizontal]
-`arkstChannel`::
+`atlasstChannel`::
     Specifies the release channel (git branch) to use when
-    upgrading the ARK server tools
+    upgrading the ATLAS server tools
 
 `install_bindir`::
 `install_libexecdir`::
@@ -435,7 +436,7 @@ files:
 
 `steamcmd_user`::
     The user under which the tools should be run.  Set to `--me`
-    in `~/.arkmanager.cfg` in the case of a user-install
+    in `~/.atlasmanager.cfg` in the case of a user-install
 
 The following options can be overridden on a per-instance basis:
 
@@ -471,49 +472,49 @@ The following options can be overridden on a per-instance basis:
     Some SteamCMD installations use `SteamApps` as the steamapps directory
     instead of `steamapps`
 
-`arkserverexec`::
-    The relative path within an ARK server install where the
-    ARK server executable can be found.
-    For the standard ARK server, this should be `ShooterGame/Binaries/Linux/ShooterGameServer`
+`atlasserverexec`::
+    The relative path within an ATLAS server install where the
+    ATLAS server executable can be found.
+    For the standard ATLAS server, this should be `ShooterGame/Binaries/Linux/ShooterGameServer`
 
-`arkbackupdir`::
+`atlasbackupdir`::
     The directory in which to store backups.  Can be overridden in
     the instance config.
 
-`arkwarnminutes`::
+`atlaswarnminutes`::
     The number of minutes over which the shutdown and update warnings
     should be run
 
-`arkautorestartfile`::
-    The relative path within an ARK server install to place the
+`atlasautorestartfile`::
+    The relative path within an ATLAS server install to place the
     autorestart lock file
 
-`arkAlwaysRestartOnCrash`::
+`atlasAlwaysRestartOnCrash`::
     Set to `true` to enable automatically restarting even when the
     server has not become ready for player connections.
     Be aware that this may cause the server to enter an endless
     crash-restart loop if the cause of the crash is not resolved.
 
-`arkAutoUpdateOnStart`::
+`atlasAutoUpdateOnStart`::
     Set to `true` to enable updating before server startup
 
-`arkBackupPreUpdate`::
+`atlasBackupPreUpdate`::
     Set to `true` to enable automatic backups before updating
 
-`arkStagingDir`::
+`atlasStagingDir`::
     Sets the staging directory in order to download updates
     before shutting down the server
 
-`arkMaxBackupSizeMB`::
+`atlasMaxBackupSizeMB`::
     Limits the size of the stored backups
 
-`arkPriorityBoost`::
-    Attempts to boost the priority of the ARK server.
+`atlasPriorityBoost`::
+    Attempts to boost the priority of the ATLAS server.
     Negative values give a higher priority, and positive values give a lower priority.
     Requires `sudo` and `renice`
 
-`arkCpuAffinity`::
-    Attempts to set the CPU affinity of the ARK server.
+`atlasCpuAffinity`::
+    Attempts to set the CPU affinity of the ATLAS server.
     Setting is a comma-delimited list of processor indices on which the server should run.
     Requires `sudo` and `taskset`
 
@@ -591,17 +592,17 @@ The following options can be overridden on a per-instance basis:
     Specifies where to store log files
 
 `appid`::
-    The Steam AppID of the ARK server
+    The Steam AppID of the ATLAS server
 
 `mod_appid`::
-    The Steam AppID of the ARK client (used for downloading mods)
+    The Steam AppID of the ATLAS client (used for downloading mods)
 
 `mod_branch`::
     The Mod branch (`Windows` or `Linux`) to use.  Virtually all mods
-    use the `Windows` branch for the ARK server, and the `Linux`
+    use the `Windows` branch for the ATLAS server, and the `Linux`
     branch almost always crashes the server
 
-ARK server options:
+ATLAS server options:
 
 [horizontal]
 `serverMap`::
@@ -611,21 +612,21 @@ ARK server options:
     Uses the `-MapModID=<modid>?...` option to specify the server map
     mod ID
 
-`ark_<optname>="<optval>"`::
+`atlas_<optname>="<optval>"`::
     Specifies the options to use in the `Map?Option=Val?...` option
     string passed to the server
 
-`ark_<optname>=""`::
+`atlas_<optname>=""`::
     Specifies an option without a value - `Map?Option?...`
 
-`arkflag_<optname>=<anything>`::
+`atlasflag_<optname>=<anything>`::
     Specifies a dash-option without a value (i.e. flag) - e.g.
-    `arkflag_DisableDeathSpectator=true` adds the
+    `atlasflag_DisableDeathSpectator=true` adds the
     `-DisableDeathSpectator` flag
 
-`arkopt_<optname>="<optval>"`::
+`atlasopt_<optname>="<optval>"`::
     Specifies a dash-option with a value - e.g.
-    `arkopt_StructureDestructionTag=DestroySwampSnowStructures` adds
+    `atlasopt_StructureDestructionTag=DestroySwampSnowStructures` adds
     the `-StructureDestructionTag=DestroySwampSnowStructures`
     option.
 
@@ -633,14 +634,14 @@ Instance config files
 ~~~~~~~~~~~~~~~~~~~~~
 
 Instance config files are stored under
-`/etc/arkmanager/instances/<instancename>.cfg`,
-`~/.config/arkmanager/instances/<instancename>.cfg`
+`/etc/atlasmanager/instances/<instancename>.cfg`,
+`~/.config/atlasmanager/instances/<instancename>.cfg`
 or as specified in the `configfile_<instancename>` options in
 the global config.
 
 [horizontal]
-`arkserverroot`::
-    The directory under which the ARK server is installed
+`atlasserverroot`::
+    The directory under which the ATLAS server is installed
 
 `serverMap`::
     The map the server should use
@@ -649,32 +650,32 @@ the global config.
     Uses the `-MapModID=<modid>?...` option to specify the server map
     mod ID
 
-`ark_<optname>="<optval>"`::
+`atlas_<optname>="<optval>"`::
     Specifies the options to use in the `Map?Option=Val?...` option
     string passed to the server
 
-`ark_<optname>=""`::
+`atlas_<optname>=""`::
     Specifies an option without a value - `Map?Option?...`
 
-`arkflag_<optname>=<anything>`::
+`atlasflag_<optname>=<anything>`::
     Specifies a dash-option without a value (i.e. flag) - e.g.
-    `arkflag_DisableDeathSpectator=true` adds the
+    `atlasflag_DisableDeathSpectator=true` adds the
     `-DisableDeathSpectator` flag
 
-`arkopt_<optname>="<optval>"`::
+`atlasopt_<optname>="<optval>"`::
     Specifies a dash-option with a value - e.g.
-    `arkopt_StructureDestructionTag=DestroySwampSnowStructures` adds
+    `atlasopt_StructureDestructionTag=DestroySwampSnowStructures` adds
     the `-StructureDestructionTag=DestroySwampSnowStructures`
     option.
 
-`arkmod_<modnum>=<modtype>`::
+`atlasmod_<modnum>=<modtype>`::
     Specifies a mod that can be enabled or disabled using
     `enablemod` and `disablemod`.  Note that mod ids specified
     using these options are in addition to those specified directly
-    in the `ark_GameModIds` option, and override those specified in the
-    `ark_MapModId`, `serverMapMod` and `ark_TotalConversionMod`
+    in the `atlas_GameModIds` option, and override those specified in the
+    `atlas_MapModId`, `serverMapMod` and `atlas_TotalConversionMod`
     options.  Options are processed in the order they are specified
-    in the instance config file, and `arkmod_*` options in the
+    in the instance config file, and `atlasmod_*` options in the
     common config file are not applied.
     Mod types:
 
@@ -691,48 +692,46 @@ the global config.
     `disabled`;;
         A disabled mod
 
-Common ARK options
+Common ATLAS options
 ~~~~~~~~~~~~~~~~~~
 
 [horizontal]
-`ark_TotalConversionId=<modid>`::
+`atlas_TotalConversionId=<modid>`::
     Specifies the Total Conversion to use
 
-`ark_GameModIds=<modid>,<modid>,...`::
+`atlas_GameModIds=<modid>,<modid>,...`::
     Specifies the Mod IDs to use
 
-`ark_SessionName="<sessionname>"`::
+`atlas_SessionName="<sessionname>"`::
     The name under which the server should announce itself
 
-`ark_RCONEnabled="True"`::
+`atlas_RCONEnabled="True"`::
     Enabled RCON
 
-`ark_RCONPort=<portnum>`::
+`atlas_RCONPort=<portnum>`::
     The port on which the server listens for RCON commands.  Must be unique on the host.
 
-`ark_Port=<portnum>`::
+`atlas_Port=<portnum>`::
     The port on which the server listens for client connections.  Must be unique on the host.
 
-`ark_QueryPort=<portnum>`::
+`atlas_QueryPort=<portnum>`::
     The port on which the server listens for queries.  Must be unique on the host.
 
-`ark_ServerPassword="<password>"`::
+`atlas_ServerPassword="<password>"`::
     Specifies the password needed to connect to the server
 
-`ark_ServerAdminPassword="<password>"`::
+`atlas_ServerAdminPassword="<password>"`::
     Specifies the server admin password, which is also the RCON
     password.  Use of this option is discouraged - please store
     the password in the GameUserSettings.ini file instead.
 
-`ark_MaxPlayers=<numplayers>`::
+`atlas_MaxPlayers=<numplayers>`::
     The maximum number of players allowed to connect to the server
 
-`ark_AltSaveDirectoryName="<dirname>"`::
+`atlas_AltSaveDirectoryName="<dirname>"`::
     Alternative directory under `ShooterGame/Saved` under which to
     save the world files.  If multiple instances run from the same directory, this
     must be unique between these instances.
 
-`arkflag_NoBattlEye=true`::
+`atlasflag_NoBattlEye=true`::
     Disables BattlEye
-
-
