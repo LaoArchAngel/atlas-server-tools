@@ -103,31 +103,31 @@ if [ "$userinstall" == "yes" ]; then
   PREFIX="${PREFIX:-${HOME}}"
   EXECPREFIX="${EXECPREFIX:-${PREFIX}}"
   DATAPREFIX="${DATAPREFIX:-${PREFIX}/.local/share}"
-  CONFIGFILE="${PREFIX}/.arkmanager.cfg"
-  INSTANCEDIR="${PREFIX}/.config/arkmanager/instances"
+  CONFIGFILE="${PREFIX}/.atlasmanager.cfg"
+  INSTANCEDIR="${PREFIX}/.config/atlasmanager/instances"
 else
   PREFIX="${PREFIX:-/usr/local}"
   EXECPREFIX="${EXECPREFIX:-${PREFIX}}"
   DATAPREFIX="${DATAPREFIX:-${PREFIX}/share}"
-  CONFIGFILE="/etc/arkmanager/arkmanager.cfg"
-  INSTANCEDIR="/etc/arkmanager/instances"
+  CONFIGFILE="/etc/atlasmanager/atlasmanager.cfg"
+  INSTANCEDIR="/etc/atlasmanager/instances"
 fi
 
 BINDIR="${BINDIR:-${EXECPREFIX}/bin}"
-LIBEXECDIR="${LIBEXECDIR:-${EXECPREFIX}/libexec/arkmanager}"
-DATADIR="${DATADIR:-${DATAPREFIX}/arkmanager}"
+LIBEXECDIR="${LIBEXECDIR:-${EXECPREFIX}/libexec/atlasmanager}"
+DATADIR="${DATADIR:-${DATAPREFIX}/atlasmanager}"
 
 if [ "$showusage" == "yes" ]; then
     echo "Usage: ./install.sh {<user>|--me} [OPTIONS]"
-    echo "You must specify your system steam user who own steamcmd directory to install ARK Tools."
+    echo "You must specify your system steam user who own steamcmd directory to install ATLAS Tools."
     echo "Specify the special used '--me' to perform a user-install."
     echo
-    echo "<user>          The user arkmanager should be run as"
+    echo "<user>          The user atlasmanager should be run as"
     echo
     echo "Option          Description"
     echo "--help, -h      Show this help text"
     echo "--me            Perform a user-install"
-    echo "--prefix        Specify the prefix under which to install arkmanager"
+    echo "--prefix        Specify the prefix under which to install atlasmanager"
     echo "                [PREFIX=${PREFIX}]"
     echo "--exec-prefix   Specify the prefix under which to install executables"
     echo "                [EXECPREFIX=${EXECPREFIX}]"
@@ -145,25 +145,25 @@ if [ "$showusage" == "yes" ]; then
 fi
 
 if [ "$userinstall" == "yes" ]; then
-    # Copy arkmanager to ~/bin
+    # Copy atlasmanager to ~/bin
     mkdir -p "${INSTALL_ROOT}${BINDIR}"
-    cp arkmanager "${INSTALL_ROOT}${BINDIR}/arkmanager"
-    chmod +x "${INSTALL_ROOT}${BINDIR}/arkmanager"
+    cp atlasmanager "${INSTALL_ROOT}${BINDIR}/atlasmanager"
+    chmod +x "${INSTALL_ROOT}${BINDIR}/atlasmanager"
 
-    # Create a folder in ~/.local/share to store arkmanager support files
+    # Create a folder in ~/.local/share to store atlasmanager support files
     mkdir -p "${INSTALL_ROOT}${DATADIR}"
 
-    # Copy the uninstall script to ~/.local/share/arkmanager
-    cp uninstall-user.sh "${INSTALL_ROOT}${DATADIR}/arkmanager-uninstall.sh"
-    chmod +x "${INSTALL_ROOT}${DATADIR}/arkmanager-uninstall.sh"
+    # Copy the uninstall script to ~/.local/share/atlasmanager
+    cp uninstall-user.sh "${INSTALL_ROOT}${DATADIR}/atlasmanager-uninstall.sh"
+    chmod +x "${INSTALL_ROOT}${DATADIR}/atlasmanager-uninstall.sh"
     sed -i -e "s|^BINDIR=.*|BINDIR=\"${BINDIR}\"|" \
            -e "s|^DATADIR=.*|DATADIR=\"${DATADIR}\"|" \
-           "${INSTALL_ROOT}${DATADIR}/arkmanager-uninstall.sh"
+           "${INSTALL_ROOT}${DATADIR}/atlasmanager-uninstall.sh"
 
     # Create a folder in ~/logs to let Ark tools write its own log files
-    mkdir -p "${INSTALL_ROOT}${PREFIX}/logs/arktools"
+    mkdir -p "${INSTALL_ROOT}${PREFIX}/logs/atlastools"
 
-    # Create a folder in ~/.config/arkamanger to hold instance configs
+    # Create a folder in ~/.config/atlasamanger to hold instance configs
     mkdir -p "${INSTALL_ROOT}${INSTANCEDIR}"
 
     # Copy example instance config
@@ -172,18 +172,18 @@ if [ "$userinstall" == "yes" ]; then
     sed -i -e "s|\"/home/steam|\"${PREFIX}|" \
            "${INSTALL_ROOT}${INSTANCEDIR}/instance.cfg.example"
 
-    # Copy arkmanager.cfg to ~/.arkmanager.cfg.NEW
-    cp arkmanager.cfg "${INSTALL_ROOT}${CONFIGFILE}.example"
+    # Copy atlasmanager.cfg to ~/.atlasmanager.cfg.NEW
+    cp atlasmanager.cfg "${INSTALL_ROOT}${CONFIGFILE}.example"
     # Change the defaults in the new config file
     sed -i -e "s|^steamcmd_user=\"steam\"|steamcmd_user=\"--me\"|" \
            -e "s|\"/home/steam|\"${PREFIX}|" \
-           -e "s|/var/log/arktools|${PREFIX}/logs/arktools|" \
+           -e "s|/var/log/atlastools|${PREFIX}/logs/atlastools|" \
            -e "s|^install_bindir=.*|install_bindir=\"${BINDIR}\"|" \
            -e "s|^install_libexecdir=.*|install_libexecdir=\"${LIBEXECDIR}\"|" \
            -e "s|^install_datadir=.*|install_datadir=\"${DATADIR}\"|" \
            "${INSTALL_ROOT}${CONFIGFILE}.example"
 
-    # Copy arkmanager.cfg to ~/.arkmanager.cfg if it doesn't already exist
+    # Copy atlasmanager.cfg to ~/.atlasmanager.cfg if it doesn't already exist
     if [ -f "${INSTALL_ROOT}${CONFIGFILE}" ]; then
       SUFFIX=
       if [ "$migrateconfig" = "no" ]; then
@@ -194,7 +194,7 @@ if [ "$userinstall" == "yes" ]; then
       bash ./migrate-config.sh "${INSTALL_ROOT}${CONFIGFILE}${SUFFIX}"
       bash ./migrate-main-instance.sh "${INSTALL_ROOT}${CONFIGFILE}${SUFFIX}" "${INSTALL_ROOT}${INSTANCEDIR}/main.cfg${SUFFIX}"
 
-      echo "A previous version of ARK Server Tools was detected in your system, your old configuration was not overwritten. You may need to manually update it."
+      echo "A previous version of ATLAS Server Tools was detected in your system, your old configuration was not overwritten. You may need to manually update it."
       echo "A copy of the new configuration file was included in '${CONFIGFILE}.NEW'. Make sure to review any changes and update your config accordingly!"
       exit 2
     else
@@ -202,106 +202,106 @@ if [ "$userinstall" == "yes" ]; then
       cp -n "${INSTALL_ROOT}/${INSTANCEDIR}/instance.cfg.example" "${INSTALL_ROOT}/${INSTANCEDIR}/main.cfg"
     fi
 else
-    # Copy arkmanager to /usr/bin and set permissions
-    cp arkmanager "${INSTALL_ROOT}${BINDIR}/arkmanager"
-    chmod +x "${INSTALL_ROOT}${BINDIR}/arkmanager"
+    # Copy atlasmanager to /usr/bin and set permissions
+    cp atlasmanager "${INSTALL_ROOT}${BINDIR}/atlasmanager"
+    chmod +x "${INSTALL_ROOT}${BINDIR}/atlasmanager"
 
-    # Copy the uninstall script to ~/.local/share/arkmanager
+    # Copy the uninstall script to ~/.local/share/atlasmanager
     mkdir -p "${INSTALL_ROOT}${LIBEXECDIR}"
-    cp uninstall.sh "${INSTALL_ROOT}${LIBEXECDIR}/arkmanager-uninstall.sh"
-    chmod +x "${INSTALL_ROOT}${LIBEXECDIR}/arkmanager-uninstall.sh"
+    cp uninstall.sh "${INSTALL_ROOT}${LIBEXECDIR}/atlasmanager-uninstall.sh"
+    chmod +x "${INSTALL_ROOT}${LIBEXECDIR}/atlasmanager-uninstall.sh"
     sed -i -e "s|^BINDIR=.*|BINDIR=\"${BINDIR}\"|" \
            -e "s|^LIBEXECDIR=.*|LIBEXECDIR=\"${LIBEXECDIR}\"|" \
            -e "s|^DATADIR=.*|DATADIR=\"${DATADIR}\"|" \
-           "${INSTALL_ROOT}${LIBEXECDIR}/arkmanager-uninstall.sh"
+           "${INSTALL_ROOT}${LIBEXECDIR}/atlasmanager-uninstall.sh"
 
-    # Copy arkdaemon to /etc/init.d ,set permissions and add it to boot
+    # Copy atlasdaemon to /etc/init.d ,set permissions and add it to boot
     if [ -f /lib/lsb/init-functions ]; then
       # on debian 8, sysvinit and systemd are present. If systemd is available we use it instead of sysvinit
       if [ -f /etc/systemd/system.conf ]; then   # used by systemd
         mkdir -p "${INSTALL_ROOT}${LIBEXECDIR}"
-        cp systemd/arkmanager.init "${INSTALL_ROOT}${LIBEXECDIR}/arkmanager.init"
-        sed -i "s|^DAEMON=\"/usr/bin/|DAEMON=\"${BINDIR}/|" "${INSTALL_ROOT}${LIBEXECDIR}/arkmanager.init"
-        chmod +x "${INSTALL_ROOT}${LIBEXECDIR}/arkmanager.init"
-        cp systemd/arkmanager.service "${INSTALL_ROOT}/etc/systemd/system/arkmanager.service"
-        sed -i "s|=/usr/libexec/arkmanager/|=${LIBEXECDIR}/|" "${INSTALL_ROOT}/etc/systemd/system/arkmanager.service"
-        cp systemd/arkmanager@.service "${INSTALL_ROOT}/etc/systemd/system/arkmanager@.service"
-        sed -i "s|=/usr/bin/|=${BINDIR}/|;s|=steam$|=${steamcmd_user}|" "${INSTALL_ROOT}/etc/systemd/system/arkmanager@.service"
+        cp systemd/atlasmanager.init "${INSTALL_ROOT}${LIBEXECDIR}/atlasmanager.init"
+        sed -i "s|^DAEMON=\"/usr/bin/|DAEMON=\"${BINDIR}/|" "${INSTALL_ROOT}${LIBEXECDIR}/atlasmanager.init"
+        chmod +x "${INSTALL_ROOT}${LIBEXECDIR}/atlasmanager.init"
+        cp systemd/atlasmanager.service "${INSTALL_ROOT}/etc/systemd/system/atlasmanager.service"
+        sed -i "s|=/usr/libexec/atlasmanager/|=${LIBEXECDIR}/|" "${INSTALL_ROOT}/etc/systemd/system/atlasmanager.service"
+        cp systemd/atlasmanager@.service "${INSTALL_ROOT}/etc/systemd/system/atlasmanager@.service"
+        sed -i "s|=/usr/bin/|=${BINDIR}/|;s|=steam$|=${steamcmd_user}|" "${INSTALL_ROOT}/etc/systemd/system/atlasmanager@.service"
         if [ -z "${INSTALL_ROOT}" ]; then
           systemctl daemon-reload
-          systemctl enable arkmanager.service
+          systemctl enable atlasmanager.service
           echo "Ark server will now start on boot, if you want to remove this feature run the following line"
-          echo "systemctl disable arkmanager.service"
+          echo "systemctl disable atlasmanager.service"
 	fi
       else  # systemd not present, so use sysvinit
-        cp lsb/arkdaemon "${INSTALL_ROOT}/etc/init.d/arkmanager"
-        chmod +x "${INSTALL_ROOT}/etc/init.d/arkmanager"
-        sed -i "s|^DAEMON=\"/usr/bin/|DAEMON=\"${BINDIR}/|" "${INSTALL_ROOT}/etc/init.d/arkmanager"
+        cp lsb/atlasdaemon "${INSTALL_ROOT}/etc/init.d/atlasmanager"
+        chmod +x "${INSTALL_ROOT}/etc/init.d/atlasmanager"
+        sed -i "s|^DAEMON=\"/usr/bin/|DAEMON=\"${BINDIR}/|" "${INSTALL_ROOT}/etc/init.d/atlasmanager"
         # add to startup if the system use sysinit
         if [ -x /usr/sbin/update-rc.d -a -z "${INSTALL_ROOT}" ]; then
-          update-rc.d arkmanager defaults
+          update-rc.d atlasmanager defaults
           echo "Ark server will now start on boot, if you want to remove this feature run the following line"
-          echo "update-rc.d -f arkmanager remove"
+          echo "update-rc.d -f atlasmanager remove"
         fi
       fi
     elif [ -f /etc/rc.d/init.d/functions ]; then
       # on RHEL 7, sysvinit and systemd are present. If systemd is available we use it instead of sysvinit
       if [ -f /etc/systemd/system.conf ]; then   # used by systemd
         mkdir -p "${INSTALL_ROOT}${LIBEXECDIR}"
-        cp systemd/arkmanager.init "${INSTALL_ROOT}${LIBEXECDIR}/arkmanager.init"
-        sed -i "s|^DAEMON=\"/usr/bin/|DAEMON=\"${BINDIR}/|" "${INSTALL_ROOT}${LIBEXECDIR}/arkmanager.init"
-        chmod +x "${INSTALL_ROOT}${LIBEXECDIR}/arkmanager.init"
-        cp systemd/arkmanager.service "${INSTALL_ROOT}/etc/systemd/system/arkmanager.service"
-        sed -i "s|=/usr/libexec/arkmanager/|=${LIBEXECDIR}/|" "${INSTALL_ROOT}/etc/systemd/system/arkmanager.service"
-        cp systemd/arkmanager@.service "${INSTALL_ROOT}/etc/systemd/system/arkmanager@.service"
-        sed -i "s|=/usr/bin/|=${BINDIR}/|;s|=steam$|=${steamcmd_user}|" "${INSTALL_ROOT}/etc/systemd/system/arkmanager@.service"
+        cp systemd/atlasmanager.init "${INSTALL_ROOT}${LIBEXECDIR}/atlasmanager.init"
+        sed -i "s|^DAEMON=\"/usr/bin/|DAEMON=\"${BINDIR}/|" "${INSTALL_ROOT}${LIBEXECDIR}/atlasmanager.init"
+        chmod +x "${INSTALL_ROOT}${LIBEXECDIR}/atlasmanager.init"
+        cp systemd/atlasmanager.service "${INSTALL_ROOT}/etc/systemd/system/atlasmanager.service"
+        sed -i "s|=/usr/libexec/atlasmanager/|=${LIBEXECDIR}/|" "${INSTALL_ROOT}/etc/systemd/system/atlasmanager.service"
+        cp systemd/atlasmanager@.service "${INSTALL_ROOT}/etc/systemd/system/atlasmanager@.service"
+        sed -i "s|=/usr/bin/|=${BINDIR}/|;s|=steam$|=${steamcmd_user}|" "${INSTALL_ROOT}/etc/systemd/system/atlasmanager@.service"
         if [ -z "${INSTALL_ROOT}" ]; then
           systemctl daemon-reload
-          systemctl enable arkmanager.service
+          systemctl enable atlasmanager.service
           echo "Ark server will now start on boot, if you want to remove this feature run the following line"
-          echo "systemctl disable arkmanager.service"
+          echo "systemctl disable atlasmanager.service"
         fi
       else # systemd not preset, so use sysvinit
-        cp redhat/arkdaemon "${INSTALL_ROOT}/etc/rc.d/init.d/arkmanager"
-        chmod +x "${INSTALL_ROOT}/etc/rc.d/init.d/arkmanager"
-        sed -i "s@^DAEMON=\"/usr/bin/@DAEMON=\"${BINDIR}/@" "${INSTALL_ROOT}/etc/rc.d/init.d/arkmanager"
+        cp redhat/atlasdaemon "${INSTALL_ROOT}/etc/rc.d/init.d/atlasmanager"
+        chmod +x "${INSTALL_ROOT}/etc/rc.d/init.d/atlasmanager"
+        sed -i "s@^DAEMON=\"/usr/bin/@DAEMON=\"${BINDIR}/@" "${INSTALL_ROOT}/etc/rc.d/init.d/atlasmanager"
         if [ -x /sbin/chkconfig -a -z "${INSTALL_ROOT}" ]; then
-          chkconfig --add arkmanager
+          chkconfig --add atlasmanager
           echo "Ark server will now start on boot, if you want to remove this feature run the following line"
-          echo "chkconfig arkmanager off"
+          echo "chkconfig atlasmanager off"
         fi
       fi
     elif [ -f /sbin/runscript ]; then
-      cp openrc/arkdaemon "${INSTALL_ROOT}/etc/init.d/arkmanager"
-      chmod +x "${INSTALL_ROOT}/etc/init.d/arkmanager"
-      sed -i "s@^DAEMON=\"/usr/bin/@DAEMON=\"${BINDIR}/@" "${INSTALL_ROOT}/etc/init.d/arkmanager"
+      cp openrc/atlasdaemon "${INSTALL_ROOT}/etc/init.d/atlasmanager"
+      chmod +x "${INSTALL_ROOT}/etc/init.d/atlasmanager"
+      sed -i "s@^DAEMON=\"/usr/bin/@DAEMON=\"${BINDIR}/@" "${INSTALL_ROOT}/etc/init.d/atlasmanager"
       if [ -x /sbin/rc-update -a -z "${INSTALL_ROOT}" ]; then
-        rc-update add arkmanager default
+        rc-update add atlasmanager default
         echo "Ark server will now start on boot, if you want to remove this feature run the following line"
-        echo "rc-update del arkmanager default"
+        echo "rc-update del atlasmanager default"
       fi
     elif [ -f /etc/systemd/system.conf ]; then   # used by systemd
       mkdir -p "${INSTALL_ROOT}${LIBEXECDIR}"
-      cp systemd/arkmanager.init "${INSTALL_ROOT}${LIBEXECDIR}/arkmanager.init"
-      sed -i "s|^DAEMON=\"/usr/bin/|DAEMON=\"${BINDIR}/|" "${INSTALL_ROOT}${LIBEXECDIR}/arkmanager.init"
-      chmod +x "${INSTALL_ROOT}${LIBEXECDIR}/arkmanager.init"
-      cp systemd/arkmanager.service "${INSTALL_ROOT}/etc/systemd/system/arkmanager.service"
-      sed -i "s|=/usr/libexec/arkmanager/|=${LIBEXECDIR}/|" "${INSTALL_ROOT}/etc/systemd/system/arkmanager.service"
-      cp systemd/arkmanager@.service "${INSTALL_ROOT}/etc/systemd/system/arkmanager@.service"
-      sed -i "s|=/usr/bin/|=${BINDIR}/|;s|=steam$|=${steamcmd_user}|" "${INSTALL_ROOT}/etc/systemd/system/arkmanager@.service"
+      cp systemd/atlasmanager.init "${INSTALL_ROOT}${LIBEXECDIR}/atlasmanager.init"
+      sed -i "s|^DAEMON=\"/usr/bin/|DAEMON=\"${BINDIR}/|" "${INSTALL_ROOT}${LIBEXECDIR}/atlasmanager.init"
+      chmod +x "${INSTALL_ROOT}${LIBEXECDIR}/atlasmanager.init"
+      cp systemd/atlasmanager.service "${INSTALL_ROOT}/etc/systemd/system/atlasmanager.service"
+      sed -i "s|=/usr/libexec/atlasmanager/|=${LIBEXECDIR}/|" "${INSTALL_ROOT}/etc/systemd/system/atlasmanager.service"
+      cp systemd/atlasmanager@.service "${INSTALL_ROOT}/etc/systemd/system/atlasmanager@.service"
+      sed -i "s|=/usr/bin/|=${BINDIR}/|;s|=steam$|=${steamcmd_user}|" "${INSTALL_ROOT}/etc/systemd/system/atlasmanager@.service"
       if [ -z "${INSTALL_ROOT}" ]; then
         systemctl daemon-reload
-        systemctl enable arkmanager.service
+        systemctl enable atlasmanager.service
         echo "Ark server will now start on boot, if you want to remove this feature run the following line"
-        echo "systemctl disable arkmanager.service"
+        echo "systemctl disable atlasmanager.service"
       fi
     fi
 
     # Create a folder in /var/log to let Ark tools write its own log files
-    mkdir -p "${INSTALL_ROOT}/var/log/arktools"
-    chown "$steamcmd_user" "${INSTALL_ROOT}/var/log/arktools"
+    mkdir -p "${INSTALL_ROOT}/var/log/atlastools"
+    chown "$steamcmd_user" "${INSTALL_ROOT}/var/log/atlastools"
 
-    # Create a folder in /etc/arkmanager to hold instance config files
+    # Create a folder in /etc/atlasmanager to hold instance config files
     mkdir -p "${INSTALL_ROOT}${INSTANCEDIR}"
     chown "$steamcmd_user" "${INSTALL_ROOT}${INSTANCEDIR}"
 
@@ -312,13 +312,13 @@ else
     sed -i -e "s|\"/home/steam|\"/home/$steamcmd_user|" \
            "${INSTALL_ROOT}${INSTANCEDIR}/instance.cfg.example"
 
-    # Copy arkmanager bash_completion into /etc/bash_completion.d/
-    cp bash_completion/arkmanager "${INSTALL_ROOT}/etc/bash_completion.d/arkmanager"
+    # Copy atlasmanager bash_completion into /etc/bash_completion.d/
+    cp bash_completion/atlasmanager "${INSTALL_ROOT}/etc/bash_completion.d/atlasmanager"
 
-    # Copy arkmanager.cfg inside linux configuation folder if it doesn't already exists
-    mkdir -p "${INSTALL_ROOT}/etc/arkmanager"
-    chown "$steamcmd_user" "${INSTALL_ROOT}/etc/arkmanager"
-    cp arkmanager.cfg "${INSTALL_ROOT}${CONFIGFILE}.example"
+    # Copy atlasmanager.cfg inside linux configuation folder if it doesn't already exists
+    mkdir -p "${INSTALL_ROOT}/etc/atlasmanager"
+    chown "$steamcmd_user" "${INSTALL_ROOT}/etc/atlasmanager"
+    cp atlasmanager.cfg "${INSTALL_ROOT}${CONFIGFILE}.example"
     chown "$steamcmd_user" "${INSTALL_ROOT}${CONFIGFILE}.example"
     sed -i -e "s|^steamcmd_user=\"steam\"|steamcmd_user=\"$steamcmd_user\"|" \
            -e "s|\"/home/steam|\"/home/$steamcmd_user|" \
@@ -337,8 +337,8 @@ else
       bash ./migrate-config.sh "${INSTALL_ROOT}${CONFIGFILE}${SUFFIX}"
       bash ./migrate-main-instance.sh "${INSTALL_ROOT}${CONFIGFILE}${SUFFIX}" "${INSTALL_ROOT}${INSTANCEDIR}/main.cfg${SUFFIX}"
 
-      echo "A previous version of ARK Server Tools was detected in your system, your old configuration was not overwritten. You may need to manually update it."
-      echo "A copy of the new configuration file was included in /etc/arkmanager. Make sure to review any changes and update your config accordingly!"
+      echo "A previous version of ATLAS Server Tools was detected in your system, your old configuration was not overwritten. You may need to manually update it."
+      echo "A copy of the new configuration file was included in /etc/atlasmanager. Make sure to review any changes and update your config accordingly!"
       exit 2
     else
       cp -n "${INSTALL_ROOT}${CONFIGFILE}.example" "${INSTALL_ROOT}${CONFIGFILE}"
