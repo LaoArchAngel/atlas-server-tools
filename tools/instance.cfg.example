@@ -4,12 +4,12 @@ atlasserverroot="/home/steam/ATLAS"                                     # path o
 # ATLAS server options - use atlas_<optionname>=<value>
 # comment out these values if you want to define them
 # inside your GameUserSettings.ini file
-serverMap="Ocean"                                               # server map (default TheIsland)
-#serverMapModId="469987622"                                         # Uncomment this to specify the Map Mod Id (<fileid> in http://steamcommunity.com/sharedfiles/filedetails/?id=<fileid>)
+serverMap="Ocean"                                                     # server map (default Ocean)
+#serverMapModId="469987622"                                           # Uncomment this to specify the Map Mod Id (<fileid> in http://steamcommunity.com/sharedfiles/filedetails/?id=<fileid>)
 #atlas_TotalConversionMod="496735411"                                 # Uncomment this to specify a total-conversion mod
 atlas_RCONEnabled="True"                                              # Enable RCON Protocol
 atlas_RCONPort="32330"                                                # RCON Port
-atlas_SessionName="ATLAS Server Tools"                                  # if your session name needs special characters please use the .ini instead
+atlas_SessionName="ATLAS Server Tools"                                # if your session name needs special characters please use the .ini instead
 atlas_Port="5750"                                                     # ATLAS server port (default 7778)
 atlas_QueryPort="57550"                                               # ATLAS query port (default 27015)
 atlas_ServerPassword=""                                               # ATLAS server password, empty: no password required to login
@@ -24,3 +24,7 @@ atlas_MaxPlayers="70"
 
 # ATLAS server options - i.e. for -optname=val, use atlasopt_optname=val
 #atlasopt_StructureDestructionTag=DestroySwampSnowStructures
+
+atlas_ServerX=0                                                       # Enter the grid X position of this instance.
+atlas_ServerY=0                                                       # Enter the grid Y position of this instance.
+#atlas_SeamlessIP=1.2.3.4                                             # Uncomment and enter the public IP of your server.
