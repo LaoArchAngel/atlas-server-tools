@@ -7,10 +7,10 @@
 # Contributors:         Sispheor, Atriusftw, klightspeed, lexat, puseidr
 
 # Script version
-atlasstVersion='1.6'
+atlasstVersion='1.7'
 atlasstTag=''
 atlasstCommit=''
-atlasstGithubRepo="BoiseComputer/ark-server-tools"
+atlasstGithubRepo="BoiseComputer/atlas-server-tools"
 atlasstRootUseEnv=''
 atlasstGlobalCfgFile='/etc/atlasmanager/atlasmanager.cfg'
 atlasstUserCfgFile='.atlasmanager.cfg'
@@ -296,12 +296,12 @@ checkConfig() {
       echo -e "[" "$YELLOW" "WARN" "$NORMAL" "]" "\tYour ATLAS server exec could not be found."
     fi
 
-    # SavedArks directory
+    # SavedATLASs directory
     if [ -n "$atlasserverroot" ]; then
-      local savedatlassdir="${atlasserverroot}/${atlasserverdir}/Saved/${atlas_AltSaveDirectoryName:-SavedArks}"
+      local savedatlassdir="${atlasserverroot}/${atlasserverdir}/Saved/${atlas_AltSaveDirectoryName:-SavedATLASs}"
       mkdir -p "${savedatlassdir}"
       if [ ! -w "${savedatlassdir}" ]; then
-        echo -e "[" "$RED" "ERROR" "$NORMAL" "]" "\tThe ATLAS SavedArks directory is not writable, and saveworld will fail"
+        echo -e "[" "$RED" "ERROR" "$NORMAL" "]" "\tThe ATLAS SavedATLASs directory is not writable, and saveworld will fail"
       fi
     fi
 
@@ -739,8 +739,8 @@ function getServerMapName(){
 #
 # Gets the saved worlds directory
 #
-function getSavedArksDirectory(){
-  local savedir="SavedArks"
+function getSavedATLASsDirectory(){
+  local savedir="SavedATLASs"
   local saverootdir="$1"
 
   # Get save directory name
@@ -1917,7 +1917,7 @@ doUpdate() {
         doSaveWorld
 
         saverootdir="${atlasserverroot}/${atlasserverdir}/Saved"
-        savedir="$(getSavedArksDirectory "${saverootdir}")"
+        savedir="$(getSavedATLASsDirectory "${saverootdir}")"
         mapname="$(getServerMapName)"
         maxwait=30
 
@@ -2687,7 +2687,7 @@ doBackup(){
   local backupdirdaily="${atlasbackupdir}/${daystamp}"
   local saverootdir="${atlasserverroot}/${atlasserverdir}/Saved"
   local savedcfgdir="${saverootdir}/Config/LinuxServer"
-  local savedir="$(getSavedArksDirectory "${saverootdir}")"
+  local savedir="$(getSavedATLASsDirectory "${saverootdir}")"
   local mapname="$(getServerMapName)"
   mkdir -p "$backupdir"
   mkdir -p "$backupdirdaily"
