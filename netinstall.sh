@@ -4,7 +4,7 @@
 # Net Installer, used with curl
 #
 
-atlasstGithubRepo="BoiseComputer/ark-server-tools"
+atlasstGithubRepo="BoiseComputer/atlas-server-tools"
 
 steamcmd_user="$1"
 shift
@@ -51,9 +51,9 @@ function doInstallFromCommit(){
   curl -s -L "https://github.com/${atlasstGithubRepo}/archive/${commit}.tar.gz" | tar -xz
   cd "atlas-server-tools-${commit}/tools"
   if [ ! -f "install.sh" ]; then echo "install.sh not found in $PWD"; exit 1; fi
-  sed -i -e "s|^atlasstCommit='.*'|arkstCommit='${commit}'|" \
+  sed -i -e "s|^atlasstCommit='.*'|atlasstCommit='${commit}'|" \
          -e "s|^atlasstTag='.*'|atlasstTag='${tagname}'|" \
-         arkmanager
+         atlasmanager
   echo "Running install.sh"
   bash install.sh "$steamcmd_user" "${reinstall_args[@]}"
   result=$?
