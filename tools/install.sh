@@ -160,7 +160,7 @@ if [ "$userinstall" == "yes" ]; then
            -e "s|^DATADIR=.*|DATADIR=\"${DATADIR}\"|" \
            "${INSTALL_ROOT}${DATADIR}/atlasmanager-uninstall.sh"
 
-    # Create a folder in ~/logs to let Ark tools write its own log files
+    # Create a folder in ~/logs to let ATLAS tools write its own log files
     mkdir -p "${INSTALL_ROOT}${PREFIX}/logs/atlastools"
 
     # Create a folder in ~/.config/atlasamanger to hold instance configs
@@ -230,7 +230,7 @@ else
         if [ -z "${INSTALL_ROOT}" ]; then
           systemctl daemon-reload
           systemctl enable atlasmanager.service
-          echo "Ark server will now start on boot, if you want to remove this feature run the following line"
+          echo "ATLAS server will now start on boot, if you want to remove this feature run the following line"
           echo "systemctl disable atlasmanager.service"
 	fi
       else  # systemd not present, so use sysvinit
@@ -240,7 +240,7 @@ else
         # add to startup if the system use sysinit
         if [ -x /usr/sbin/update-rc.d -a -z "${INSTALL_ROOT}" ]; then
           update-rc.d atlasmanager defaults
-          echo "Ark server will now start on boot, if you want to remove this feature run the following line"
+          echo "ATLAS server will now start on boot, if you want to remove this feature run the following line"
           echo "update-rc.d -f atlasmanager remove"
         fi
       fi
@@ -258,7 +258,7 @@ else
         if [ -z "${INSTALL_ROOT}" ]; then
           systemctl daemon-reload
           systemctl enable atlasmanager.service
-          echo "Ark server will now start on boot, if you want to remove this feature run the following line"
+          echo "ATLAS server will now start on boot, if you want to remove this feature run the following line"
           echo "systemctl disable atlasmanager.service"
         fi
       else # systemd not preset, so use sysvinit
@@ -267,7 +267,7 @@ else
         sed -i "s@^DAEMON=\"/usr/bin/@DAEMON=\"${BINDIR}/@" "${INSTALL_ROOT}/etc/rc.d/init.d/atlasmanager"
         if [ -x /sbin/chkconfig -a -z "${INSTALL_ROOT}" ]; then
           chkconfig --add atlasmanager
-          echo "Ark server will now start on boot, if you want to remove this feature run the following line"
+          echo "ATLAS server will now start on boot, if you want to remove this feature run the following line"
           echo "chkconfig atlasmanager off"
         fi
       fi
@@ -277,7 +277,7 @@ else
       sed -i "s@^DAEMON=\"/usr/bin/@DAEMON=\"${BINDIR}/@" "${INSTALL_ROOT}/etc/init.d/atlasmanager"
       if [ -x /sbin/rc-update -a -z "${INSTALL_ROOT}" ]; then
         rc-update add atlasmanager default
-        echo "Ark server will now start on boot, if you want to remove this feature run the following line"
+        echo "ATLAS server will now start on boot, if you want to remove this feature run the following line"
         echo "rc-update del atlasmanager default"
       fi
     elif [ -f /etc/systemd/system.conf ]; then   # used by systemd
@@ -292,12 +292,12 @@ else
       if [ -z "${INSTALL_ROOT}" ]; then
         systemctl daemon-reload
         systemctl enable atlasmanager.service
-        echo "Ark server will now start on boot, if you want to remove this feature run the following line"
+        echo "ATLAS server will now start on boot, if you want to remove this feature run the following line"
         echo "systemctl disable atlasmanager.service"
       fi
     fi
 
-    # Create a folder in /var/log to let Ark tools write its own log files
+    # Create a folder in /var/log to let ATLAS tools write its own log files
     mkdir -p "${INSTALL_ROOT}/var/log/atlastools"
     chown "$steamcmd_user" "${INSTALL_ROOT}/var/log/atlastools"
 
