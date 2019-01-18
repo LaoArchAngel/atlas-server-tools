@@ -69,7 +69,7 @@ iptables -I INPUT -p tcp --match multiport --dport 5750,5751,5752,5753 -j ACCEPT
 NB: Change the ports according to the ones set in your `atlasmanager.cfg` file.
 
 Install ATLAS Server Tools
-~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 To install ATLAS Server Tools run this command:
 
@@ -124,7 +124,7 @@ If the RCONPort setting is shared between multiple instances, the server will ha
 See <<Configuration files>> for more options.
 
 Install ATLAS Server
-~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
 
 To install ATLAS Server just run this command as normal user:
 
@@ -693,7 +693,7 @@ the global config.
         A disabled mod
 
 Common ATLAS options
-~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
 
 [horizontal]
 `atlas_TotalConversionId=<modid>`::
