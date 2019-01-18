@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# ATLAS: survival evolved manager
+# ATLAS manager
 #
 # Original author:      LeXaT
 # Maintainer:           FezVrasta
-# Contributors:         Sispheor, Atriusftw, klightspeed, lexat, puseidr
+# Contributors:         Sispheor, Atriusftw, klightspeed, lexat, puseidr, boisecomputer
 
 # Script version
 atlasstVersion='1.7'
