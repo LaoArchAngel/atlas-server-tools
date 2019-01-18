@@ -1,0 +1,12 @@
+[Unit]
+Description=Starts and stops all atlas server instances
+After=network.target
+
+[Service]
+ExecStart=/usr/libexec/atlasmanager/atlasmanager.init start
+ExecStop=/usr/libexec/atlasmanager/atlasmanager.init stop
+Type=forking
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
