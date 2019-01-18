@@ -1,0 +1,7 @@
+[Unit]
+Description=Daemon to start an atlas server instance
+
+[Service]
+User=steam
+ExecStart=/usr/bin/atlasmanager useconfig %i start --no-background
+Type=simple
