@@ -28,3 +28,4 @@ atlas_MaxPlayers="70"
 atlas_ServerX=0                                                       # Enter the grid X position of this instance.
 atlas_ServerY=0                                                       # Enter the grid Y position of this instance.
 #atlas_SeamlessIP=1.2.3.4                                             # Uncomment and enter the public IP of your server.
+GridConfig="MyServerConfig.json"                                      # Enter filename of json file for your map grid.
