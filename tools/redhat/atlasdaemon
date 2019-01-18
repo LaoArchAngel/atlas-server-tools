@@ -1,22 +1,22 @@
 #!/bin/bash
 #
-# /etc/rc.d/init.d/arkmanager
+# /etc/rc.d/init.d/atlasmanager
 #
-# ARK manager daemon
+# ATLAS manager daemon
 #
 # chkconfig: 2345 80 20
-# description: ARK manager daemon used to start the server and keep it updated
+# description: ATLAS manager daemon used to start the server and keep it updated
 # processname: ShooterGameServer
-# config: /etc/arkmanager/arkmanager.cfg
+# config: /etc/atlasmanager/atlasmanager.cfg
 
 ### BEGIN INIT INFO
-# Provides:          ARK manager deamon
+# Provides:          ATLAS manager deamon
 # Required-Start:    networking
 # Required-Stop:     networking
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Short-Description: ARK manager deamon
-# Description:       ARK manager daemon used to start the server and keep it updated
+# Short-Description: ATLAS manager deamon
+# Description:       ATLAS manager daemon used to start the server and keep it updated
 #
 ### END INIT INFO
 
@@ -24,11 +24,11 @@
 . /etc/rc.d/init.d/functions
 
 # Global variables
-source /etc/arkmanager/arkmanager.cfg
+source /etc/atlasmanager/atlasmanager.cfg
 
 NAME="ShooterGameServer"
 LOGFILE="${logdir}/${NAME}.log"
-DAEMON="/usr/bin/arkmanager"
+DAEMON="/usr/bin/atlasmanager"
 
 GREEN="\\033[1;32m"
 RED="\\033[1;31m"
@@ -48,7 +48,7 @@ test -x $DAEMON || exit 5
 
 function start_instance(){
   local INSTANCE="$1"
-  PID="$(<"/var/run/arkmanager.${INSTANCE}.pid")"
+  PID="$(<"/var/run/atlasmanager.${INSTANCE}.pid")"
   if [ -n "$PID" ] && kill -0 "$PID" >/dev/null 2>&1; then
     if grep " ${PID} .* ${DAEMON}" <(ps -ef) >/dev/null 2>&1; then
       echo "$NAME @${INSTANCE} is already running"
@@ -62,8 +62,8 @@ function start_instance(){
 
   sleep 5
   if kill -0 "$PID" >/dev/null 2>&1; then
-    echo "$PID" >"/var/run/arkmanager.${INSTANCE}.pid"
-    touch "/var/lock/subsys/arkmanager.${INSTANCE}"
+    echo "$PID" >"/var/run/atlasmanager.${INSTANCE}.pid"
+    touch "/var/lock/subsys/atlasmanager.${INSTANCE}"
     echo "[" "$GREEN" " OK " "$NORMAL" "]"
     return 0
   else
@@ -90,8 +90,8 @@ function stop_instance(){
   local INSTANCE="$1"
   echo -n "Stopping $NAME @${INSTANCE}: "
   "${DAEMON}" stop "@${INSTANCE}" &
-  rm -f "/var/lock/subsys/arkmanager.${INSTANCE}"
-  rm -f "/var/run/arkmanager.${INSTANCE}.pid"
+  rm -f "/var/lock/subsys/atlasmanager.${INSTANCE}"
+  rm -f "/var/run/atlasmanager.${INSTANCE}.pid"
   echo "[" "$GREEN" " OK " "$NORMAL" "]"
   return 0
 }
@@ -103,7 +103,7 @@ case "$1" in
       exit $?
     else
       if start_all_instances; then
-        touch /var/lock/subsys/arkmanager
+        touch /var/lock/subsys/atlasmanager
         exit 0
       else
         exit 1
@@ -119,7 +119,7 @@ case "$1" in
       for instance in $("${DAEMON}" list-instances --brief); do
         stop_instance "$instance"
       done
-      rm -f "/var/lock/subsys/arkmanager"
+      rm -f "/var/lock/subsys/atlasmanager"
       exit $?
     fi
   ;;
