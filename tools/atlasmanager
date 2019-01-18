@@ -349,7 +349,7 @@ getArkServerSetting() {
       return
     fi
   done
-  local val="$(tr -d '\0\376\377' <"${atlasserverroot}/${atlasserverdir}/Saved/Config/LinuxServer/GameUserSettings.ini" | sed -n '/^\[ServerSettings\]/,/^\[.*\]/{s/^'"$1"'[[:space:]]*=[[:space:]]*//ip;}' )"
+  local val="$(tr -d '\0\376\377' <"${atlasserverroot}/${atlasserverdir}/Config/DefaultGameUserSettings.ini" | sed -n '/^\[ServerSettings\]/,/^\[.*\]/{s/^'"$1"'[[:space:]]*=[[:space:]]*//ip;}' )"
   if [ -n "$val" ]; then
     echo "$val"
   else
