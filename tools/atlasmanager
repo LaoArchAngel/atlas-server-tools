@@ -8,8 +8,8 @@
 
 # Script version
 atlasstVersion='1.7'
-atlasstTag=''
-atlasstCommit=''
+atlasstTag='v1.7.3'
+atlasstCommit='6bf2920f8cd02f91492d9590791ddc7ddeda82b9'
 atlasstGithubRepo="BoiseComputer/atlas-server-tools"
 atlasstRootUseEnv=''
 atlasstGlobalCfgFile='/etc/atlasmanager/atlasmanager.cfg'
@@ -817,7 +817,21 @@ function getServerPID(){
 }
 
 #
-# Check id the server process is alive
+# Get the PID of the server process
+#
+function getRedisServerPID(){
+  if [ -f "${atlasserverroot}/AtlasTools/RedisDatabase/${atlasredisserverpidfile}" ]; then
+    redisserverpid="$(<"${atlasserverroot}/AtlasTools/RedisDatabase/${atlasredisserverpidfile}")"
+    if kill -0 "$redisserverpid" >/dev/null 2>&1; then
+      echo $redisserverpid
+      return
+    fi
+  fi
+}
+
+
+#
+# Check if the server process is alive
 #
 function isTheServerRunning(){
   if [ -n "`getServerPID`" ]; then
@@ -826,6 +840,18 @@ function isTheServerRunning(){
     return 1
   fi
 }
+
+#
+# Check if the Redis server process is alive
+#
+function isTheRedisServerRunning(){
+  if [ -n "`getRedisServerPID`" ]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
 
 #
 # Check if the server is up
@@ -1095,6 +1121,7 @@ doRun() {
   echo "`timestamp`: start"
 
   serverpid=0
+  redisserverpid=0
   restartserver=1
 
   # Shutdown the server when we are terminated
@@ -2952,7 +2979,12 @@ printStatus(){
   else
     echo -e "$NORMAL" "Server running: " "$RED" "No" "$NORMAL"
   fi
-
+  if isTheRedisServerRunning ;then
+    echo -e "$NORMAL" "Redis Server running: " "$GREEN" "Yes" "$NORMAL"
+    echo -e "$NORMAL" "Redis Server PID: " "$GREEN" "$(getRedisServerPID)" "$NORMAL"
+  else
+    echo -e "$NORMAL" "Redis Server running: " "$RED" "No" "$NORMAL"
+  fi
   if isTheServerUp ;then
     echo -e "$NORMAL" "Server listening: " "$RED" "No" "$NORMAL"
   else
@@ -3111,6 +3143,7 @@ useConfig() {
   atlasautorestartfile="${atlasautorestartfile:-${atlasserverdir}/Saved/.autorestart-${1}}"
   atlasoldautorestartfile="${atlasserverdir}/Saved/.autorestart"
   atlasserverpidfile="${atlasserverpidfile:-${atlasserverdir}/Saved/.atlasserver-${1}.pid}"
+  atlasredisserverpidfile="redis_atlas.pid"
   atlasserveroldpidfile="${atlasserverdir}/Saved/.atlasserver.pid"
   atlasmanagerpidfile="${atlasmanagerpidfile:-${atlasserverdir}/Saved/.atlasmanager-${1}.pid}"
   atlaswarnlockfile="${atlaswarnlockfile:-${atlasserverdir}/Saved/.atlas-warn-${1}.lock}"
