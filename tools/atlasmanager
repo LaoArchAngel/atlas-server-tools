@@ -2996,7 +2996,7 @@ printStatus(){
 
     if isTheServerOnline; then
       echo -e "$NORMAL" "Server online: " "$GREEN" "Yes" "$NORMAL"
-      echo -e "$NORMAL" "ATLASServers link: " "$GREEN" "http://atlasservers.net/server/${publicip}:$(getQueryPort)" "$NORMAL"
+#      echo -e "$NORMAL" "ATLASServers link: " "$GREEN" "http://atlasservers.net/server/${publicip}:$(getQueryPort)" "$NORMAL" #Disabled until a suitable alternative is found.
       echo -e "$NORMAL" "Steam connect link: " "$GREEN" "steam://connect/${publicip}:$(getQueryPort)" "$NORMAL"
     else
       echo -e "$NORMAL" "Server online: " "$RED" "No" "$NORMAL"
