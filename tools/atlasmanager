@@ -189,6 +189,12 @@ runAsRoot(){
     doUpgradeTools
   elif [ "$1" == "uninstall-tools" ]; then
     doUninstallTools
+  elif [ "$1" == "redis-start" ]; then
+    doRedisStart
+  elif [ "$1" == "redis-stop" ]; then
+    doRedisStop
+  elif [ "$1" == "redis-status" ]; then
+    doRedisStatus
   else
     su "$steamcmd_user" -s "$steamcmd_user_shellexec" -c "$(printf "%q" "$0")$(printf " %q" "$@")"
     exit 1
@@ -820,12 +826,10 @@ function getServerPID(){
 # Get the PID of the server process
 #
 function getRedisServerPID(){
-  if [ -f "${atlasserverroot}/AtlasTools/RedisDatabase/${atlasredisserverpidfile}" ]; then
-    redisserverpid="$(<"${atlasserverroot}/AtlasTools/RedisDatabase/${atlasredisserverpidfile}")"
-    if kill -0 "$redisserverpid" >/dev/null 2>&1; then
+  if [ -f "$redis_pid_file" ]; then
+      redisserverpid="$(<"${redis_pid_file}")"
       echo $redisserverpid
       return
-    fi
   fi
 }
 
@@ -1229,6 +1233,31 @@ doRun() {
       echo "`timestamp`: restarting server"
     fi
   done
+}
+
+doRedisStart() {
+  redisserverpid="$(getRedisServerPID)"
+if [ -n "$redisserverpid" ] && kill -0 "$redisserverpid"; then
+	logprint "Start aborted due to Redis server already running - pid: $redisserverpid"
+else
+	tput sc
+	logprint "The Redis server is starting..."
+       	redis-server "$redis_config_file" --daemonize yes --pidfile "$redis_pid_file"
+	logprint "The server is now running."
+fi
+}
+
+doRedisStop() {
+redis-cli -a "$redis_password" shutdown
+}
+
+doRedisStatus() {
+if isTheRedisServerRunning ;then
+	echo -e "$NORMAL" "Redis Server running: " "$GREEN" "Yes" "$NORMAL"
+        echo -e "$NORMAL" "Redis Server PID: " "$GREEN" "$(getRedisServerPID)" "$NORMAL"
+else
+	echo -e "$NORMAL" "Redis Server running: " "$RED" "No" "$NORMAL"
+fi
 }
 
 doRunBG(){
@@ -3143,7 +3172,7 @@ useConfig() {
   atlasautorestartfile="${atlasautorestartfile:-${atlasserverdir}/Saved/.autorestart-${1}}"
   atlasoldautorestartfile="${atlasserverdir}/Saved/.autorestart"
   atlasserverpidfile="${atlasserverpidfile:-${atlasserverdir}/Saved/.atlasserver-${1}.pid}"
-  atlasredisserverpidfile="redis_atlas.pid"
+  atlasredisserverpidfile="$redis_pid_file"
   atlasserveroldpidfile="${atlasserverdir}/Saved/.atlasserver.pid"
   atlasmanagerpidfile="${atlasmanagerpidfile:-${atlasserverdir}/Saved/.atlasmanager-${1}.pid}"
   atlaswarnlockfile="${atlaswarnlockfile:-${atlasserverdir}/Saved/.atlas-warn-${1}.lock}"
@@ -3185,6 +3214,9 @@ showUsage() {
 	Command               Description
 	upgrade-tools         Check for a new ATLAS Server Tools version and upgrades it if needed
 	uninstall-tools       Uninstall the ATLAS Server Tools
+	redis-start	      Attempts to start Redis
+	redis-stop	      Stops Redis
+	redis-status	      Dispays the status and pid of Redis process
 	useconfig <name>      Sets the default instance for the commands that follow
 	remove-mods <modid>   Remove one or more mods from the steamcmd workshop directory
 	list-instances        Lists all available instances
@@ -3218,6 +3250,11 @@ showUsage() {
 	printconfig           Displays which settings are sourced from which config file
 	getpid                Gets the running server PID
 	update                Check for a new ATLAS server version, if needed, stops the server, updates it, and starts it again
+
+	Redis command takes the following options:
+	   --start	      Will attempt to start the Redis server.
+	   --stop	      Will attempt to stop the Redis server.
+	   --status	      Shows if Redis is online or offline along with the pid file.
 
 	Commands which invoke steamcmd take the following options:
 	   --verbose          Show steamcmd output
@@ -3379,6 +3416,18 @@ main(){
       ;;
       uninstall-tools)
         doUninstallTools
+        exit
+      ;;
+      redis-start)
+        doRedisStart
+        exit
+      ;;
+      redis-stop)
+        doRedisStop
+        exit
+      ;;
+      redis-status)
+        doRedisStatus
         exit
       ;;
       useconfig)
