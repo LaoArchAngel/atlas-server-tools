@@ -334,7 +334,7 @@ checkConfig() {
 # $1 is the setting name
 # $2 is the default
 #
-getArkServerSetting() {
+getAtlasServerSetting() {
   local lcname="$(tr 'A-Z' 'a-z' <<<"${1}")"
   local varname
   for varname in "${!atlas_@}"; do
@@ -361,25 +361,25 @@ getArkServerSetting() {
 # Get server admin password
 #
 getAdminPassword() {
-  getArkServerSetting "ServerAdminPassword" ""
+  getAtlasServerSetting "ServerAdminPassword" ""
 }
 
 #
 # Get server RCON Port
 #
 getRconPort() {
-  getArkServerSetting "RCONPort" "32330"
+  getAtlasServerSetting "RCONPort" "32330"
 }
 
 #
 # Gets server bind IP
 #
 getMultiHome() {
-  getArkServerSetting "MultiHome" "${1}"
+  getAtlasServerSetting "MultiHome" "${1}"
 }
 
 getMultiHomeIP() {
-  getArkServerSetting "MultiHome" "${1:-127.0.0.1}"
+  getAtlasServerSetting "MultiHome" "${1:-127.0.0.1}"
 }
 
 #
@@ -3119,7 +3119,7 @@ useConfig() {
   atlasupdatetimefile="${atlasupdatetimefile:-${atlasserverdir}/Saved/.atlas-update.time}"
 }
 
-addArkOpt() {
+addAtlasOpt() {
   local optname="${1%%=*}"
   local optval="${1#*=}"
   local optdash="${optname:0:1}"
@@ -3315,7 +3315,7 @@ main(){
           progressDisplayType=spinner
         ;;
         --atlasopt,*)
-          addArkOpt "${1#--atlasopt,}"
+          addAtlasOpt "${1#--atlasopt,}"
         ;;
         --*)
           options+=( "$1" )
