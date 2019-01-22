@@ -8,7 +8,7 @@
 
 # Script version
 atlasstVersion='1.7'
-atlasstTag='v1.7.3'
+atlasstTag='v1.7.6'
 atlasstCommit='6bf2920f8cd02f91492d9590791ddc7ddeda82b9'
 atlasstGithubRepo="BoiseComputer/atlas-server-tools"
 atlasstRootUseEnv=''
@@ -1048,12 +1048,12 @@ doRun() {
       atlas_*)
         name="${varname#atlas_}"
 
-        # Port is actually one higher than specified
-        # i.e. specifying port 7777 will have the server
-        # use port 7778
-        if [ "$name" == "Port" ]; then
-          (( val = val - 1 ))
-        fi
+#        # Port is actually one higher than specified
+#        # i.e. specifying port 7777 will have the server
+#        # use port 7778
+#        if [ "$name" == "Port" ]; then
+#          (( val = val - 1 ))
+#        fi
 
         if [ -n "$val" ]; then
           atlasserveropts="${atlasserveropts}?${name}=${val}"
@@ -1083,12 +1083,12 @@ doRun() {
     name="${varname#atlas_}"
     val="${!varname}"
 
-    # Port is actually one higher than specified
-    # i.e. specifying port 7777 will have the server
-    # use port 7778
-    if [ "$name" == "Port" ]; then
-      (( val = val - 1 ))
-    fi
+#    # Port is actually one higher than specified
+#    # i.e. specifying port 7777 will have the server
+#    # use port 7778
+#    if [ "$name" == "Port" ]; then
+#      (( val = val - 1 ))
+#    fi
 
     if [ -n "$val" ]; then
       atlasserveropts="${atlasserveropts}?${name}=${val}"
