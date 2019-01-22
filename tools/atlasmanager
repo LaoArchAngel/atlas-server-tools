@@ -304,10 +304,10 @@ checkConfig() {
 
     # SavedATLASs directory
     if [ -n "$atlasserverroot" ]; then
-      local savedatlassdir="${atlasserverroot}/${atlasserverdir}/Saved/${atlas_AltSaveDirectoryName:-SavedATLASs}"
+      local savedatlassdir="${atlasserverroot}/${atlasserverdir}/Saved/${atlas_AltSaveDirectoryName:-SavedArks}"
       mkdir -p "${savedatlassdir}"
       if [ ! -w "${savedatlassdir}" ]; then
-        echo -e "[" "$RED" "ERROR" "$NORMAL" "]" "\tThe ATLAS SavedATLASs directory is not writable, and saveworld will fail"
+        echo -e "[" "$RED" "ERROR" "$NORMAL" "]" "\tThe ATLAS SavedArks directory is not writable, and saveworld will fail"
       fi
     fi
 
@@ -726,7 +726,7 @@ function getServerMapName(){
   local mapname="${serverMap}"
 
   # extract the map name from the active map mod
-  if [[ ( -z "$mapname" || "$mapname" == "TheIsland" ) && -n "$serverMapModId" ]]; then
+  if [[ ( -z "$mapname" || "$mapname" == "Ocean" ) && -n "$serverMapModId" ]]; then
     mapname="$(perl -e '
       my $data;
       { local $/; $data = <>; }
@@ -746,7 +746,7 @@ function getServerMapName(){
 # Gets the saved worlds directory
 #
 function getSavedATLASsDirectory(){
-  local savedir="SavedATLASs"
+  local savedir="SavedArks"
   local saverootdir="$1"
 
   # Get save directory name
@@ -1022,7 +1022,7 @@ doRun() {
     esac
   done < <(sed -n 's/^\(atlasmod_[^= ]*\)=.*/\1/p' <"$configfile")
 
-  if [[ ( -z "$serverMap" || "$serverMap" == "TheIsland" ) && -n "$serverMapModId" ]]; then
+  if [[ ( -z "$serverMap" || "$serverMap" == "Ocean" ) && -n "$serverMapModId" ]]; then
     serverMap="$(perl -e '
       my $data;
       { local $/; $data = <>; }
@@ -1037,7 +1037,7 @@ doRun() {
   fi
 
   if [ -z "$atlasserveropts" ]; then
-    atlasserveropts="TheIsland"
+    atlasserveropts="Ocean"
   fi
 
   atlasextraopts=( )
