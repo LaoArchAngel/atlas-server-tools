@@ -16,7 +16,7 @@ atlas_ServerPassword=""                                               # ATLAS se
 atlas_ServerAdminPassword="keyboardcat"                               # ATLAS server admin password, KEEP IT SAFE!
 atlas_MaxPlayers="70"
 #atlas_GameModIds="487516323,487516324,487516325"                     # Uncomment to specify additional mods by Mod Id separated by commas
-#atlas_AltSaveDirectoryName="SotF"                                    # Uncomment to specify a different save directory name
+atlas_AltSaveDirectoryName="A1"                                       #Set this to a unique folder name for each instance.
 
 # ATLAS server flags - use atlasflag_<optionname>=true
 #atlasflag_OnlyAdminRejoinAsSpectator=true                            # Uncomment to only allow admins to rejoin as spectator
