@@ -193,8 +193,6 @@ runAsRoot(){
     doRedisStart
   elif [ "$1" == "redis-stop" ]; then
     doRedisStop
-  elif [ "$1" == "redis-status" ]; then
-    doRedisStatus
   else
     su "$steamcmd_user" -s "$steamcmd_user_shellexec" -c "$(printf "%q" "$0")$(printf " %q" "$@")"
     exit 1
@@ -1048,13 +1046,6 @@ doRun() {
       atlas_*)
         name="${varname#atlas_}"
 
-#        # Port is actually one higher than specified
-#        # i.e. specifying port 7777 will have the server
-#        # use port 7778
-#        if [ "$name" == "Port" ]; then
-#          (( val = val - 1 ))
-#        fi
-
         if [ -n "$val" ]; then
           atlasserveropts="${atlasserveropts}?${name}=${val}"
         else
@@ -1082,13 +1073,6 @@ doRun() {
   for varname in "${!atlas_@}"; do
     name="${varname#atlas_}"
     val="${!varname}"
-
-#    # Port is actually one higher than specified
-#    # i.e. specifying port 7777 will have the server
-#    # use port 7778
-#    if [ "$name" == "Port" ]; then
-#      (( val = val - 1 ))
-#    fi
 
     if [ -n "$val" ]; then
       atlasserveropts="${atlasserveropts}?${name}=${val}"
