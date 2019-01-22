@@ -176,6 +176,15 @@ Instanceless commands
 
 `uninstall-tools`::
     Uninstalls the ATLAS server tools
+    
+`redis-start`::
+    Starts the Redis server
+
+`redis-stop`::
+    Stops the Redis server
+
+`redis-status`::
+    Shows if Redis is running and the PID
 
 `list-instances`::
     Lists the available instances
