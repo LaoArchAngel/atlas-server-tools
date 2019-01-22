@@ -59,10 +59,12 @@ Requirements
 
 To allow your ATLAS server to communicate with the outside you have to open some ports in your firewall:
 (Example ports for a 4 server grid)
+```
 5755X = Query Ports
 575X = Game Client Ports (Leave + 1 space between servers until requirement is confirmed by Grapeshot)
 3233X = RCON Ports
 2700X = Seamless Ports
+```
 
 ```sh
 iptables -I INPUT -p udp --match multiport --dport 57550,57551,57552,57553 -j ACCEPT
