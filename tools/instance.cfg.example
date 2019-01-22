@@ -27,11 +27,4 @@ atlas_AltSaveDirectoryName="A1"                                       #Set this 
 
 atlas_ServerX=0                                                       # Enter the grid X position of this instance.
 atlas_ServerY=0                                                       # Enter the grid Y position of this instance.
-#atlas_SeamlessIP=1.2.3.4                                             # Uncomment and enter the public IP of your server.
 #GridConfig="ServerGrid2x2.json"                                      # Enter custom filename of json file for your map grid.
-atlasflag_log=true
-atlasflag_server=true
-atlas_culture="en"
-atlas_MapPlayerLocation="True"
-atlasflag_NoCrashDialog=true
-atlasflag_BattlEye=true
