@@ -189,10 +189,6 @@ runAsRoot(){
     doUpgradeTools
   elif [ "$1" == "uninstall-tools" ]; then
     doUninstallTools
-  elif [ "$1" == "redis-start" ]; then
-    doRedisStart
-  elif [ "$1" == "redis-stop" ]; then
-    doRedisStop
   else
     su "$steamcmd_user" -s "$steamcmd_user_shellexec" -c "$(printf "%q" "$0")$(printf " %q" "$@")"
     exit 1
