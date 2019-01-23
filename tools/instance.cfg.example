@@ -1,5 +1,4 @@
 # config environment
-atlasserverroot="/home/steam/ATLAS"                                     # path of your ATLAS server files (default ~/ATLAS)
 
 # ATLAS server options - use atlas_<optionname>=<value>
 # comment out these values if you want to define them
