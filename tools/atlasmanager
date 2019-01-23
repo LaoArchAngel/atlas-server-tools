@@ -7,8 +7,8 @@
 # Contributors:         Sispheor, Atriusftw, klightspeed, lexat, puseidr, boisecomputer
 
 # Script version
-atlasstVersion='1.7'
-atlasstTag='v1.7.9'
+atlasstVersion='1.8'
+atlasstTag='v1.8.0'
 atlasstCommit='6bf2920f8cd02f91492d9590791ddc7ddeda82b9'
 atlasstGithubRepo="BoiseComputer/atlas-server-tools"
 atlasstRootUseEnv=''
