@@ -3482,9 +3482,15 @@ main(){
       ;;
     esac
 
-    # Handle all instances being requested
+    # Handle all instances being requested (sort main instance to front)
     if [[ "$allinstances" == "yes" ]]; then
       instances=( $(getAllInstanceNames) )
+      for i in "${!instances[@]}"; do
+        if [[ ${instances[i]} = $defaultinstance ]]; then
+                unset instances[i]
+                instances=($defaultinstance "${instances[@]}")
+        fi
+      done
     fi
 
     # Run the command for each instance requested
@@ -3500,6 +3506,20 @@ main(){
         ;;
         start)
           doStart "${options[@]}"
+        	if [[ ${instance} = $defaultinstance ]] && [[ ${#instances[@]} > 1 ]]; then
+                	COUNTER=0
+                	if [ -z "$defaultinstance_max" ]; then
+                      		defaultinstance_max=30
+                	fi
+                	while [  $COUNTER -lt $defaultinstance_max ]; do
+                        	echo -ne "$NORMAL Waiting up to $RED$((defaultinstance_max-COUNTER))$NORMAL seconds before starting next instance."\\r
+                     		let COUNTER=COUNTER+1
+                        	if isTheServerOnline ;then
+                                	break
+                        	fi
+                     		sleep 1s
+                 	done
+        	fi	  
         ;;
         stop)
           doStop shutdown "${options[@]}"
