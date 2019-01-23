@@ -3505,23 +3505,37 @@ main(){
           doRun
         ;;
         start)
+          serverpid="$(getServerPID)"
+          if [ -n "$serverpid" ] && kill -0 "$serverpid"; then
+                  echo "Error"
+          else
+                  if [[ -f "/etc/atlasmanager/instances/${instance}.custom" ]]; then
+                        source /etc/atlasmanager/instances/${instance}.custom
+                  else
+                        touch "/etc/atlasmanager/instances/${instance}.custom"
+                        echo "# Enter custom code in to this file that will be executed before is instance starts" > /etc/atlasmanager/instances/${instance}.custom
+                  fi
+          fi
           doStart "${options[@]}"
-        	if [[ ${instance} = $defaultinstance ]] && [[ ${#instances[@]} > 1 ]]; then
-                	COUNTER=0
-                	if [ -z "$defaultinstance_max" ]; then
-                      		defaultinstance_max=30
-                	fi
-                	while [  $COUNTER -lt $defaultinstance_max ]; do
-                        	echo -ne "$NORMAL Waiting up to $RED$((defaultinstance_max-COUNTER))$NORMAL seconds before starting next instance."\\r
-                     		let COUNTER=COUNTER+1
-                        	if isTheServerOnline ;then
-                                	break
-                        	fi
-                     		sleep 1s
-                 	done
-        	fi	  
+                if [[ ${#instances[@]} != 1 ]]; then
+                        if [[ ${instance} = $defaultinstance ]] && [[ ${#instances[@]} > 1 ]] || [[ $delayallstart == true ]]; then
+                                COUNTER=0
+                                if [ -z "$defaultinstance_max" ]; then
+                                        defaultinstance_max=30
+                                fi
+                                while [  $COUNTER -lt $defaultinstance_max ]; do
+                                        echo -ne "$NORMAL Waiting up to $RED$((defaultinstance_max-COUNTER))$NORMAL seconds before starting next instance."\\r
+                                        let COUNTER=COUNTER+1
+                                        if isTheServerOnline; then
+                                                break
+                                        fi
+                                        sleep 1s
+                                done
+                                printf "\n"
+                        fi
+                fi
         ;;
-        stop)
+         stop)
           doStop shutdown "${options[@]}"
         ;;
         restart)
