@@ -1,4 +1,5 @@
 # config environment
+#atlasserverroot="/home/steam/ATLAS"                                     # Put a path here to override the default path in atlasmanager.cfg
 
 # ATLAS server options - use atlas_<optionname>=<value>
 # comment out these values if you want to define them
