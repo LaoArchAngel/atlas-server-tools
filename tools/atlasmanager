@@ -8,7 +8,7 @@
 
 # Script version
 atlasstVersion='1.8'
-atlasstTag='v1.8.0'
+atlasstTag='v1.8.1'
 atlasstCommit='6bf2920f8cd02f91492d9590791ddc7ddeda82b9'
 atlasstGithubRepo="BoiseComputer/atlas-server-tools"
 atlasstRootUseEnv=''
@@ -349,6 +349,7 @@ getAtlasServerSetting() {
       return
     fi
   done
+  touch "${atlasserverroot}/${atlasserverdir}/Saved/Config/LinuxServer/GameUserSettings.ini"
   local val="$(tr -d '\0\376\377' <"${atlasserverroot}/${atlasserverdir}/Saved/Config/LinuxServer/GameUserSettings.ini" | sed -n '/^\[ServerSettings\]/,/^\[.*\]/{s/^'"$1"'[[:space:]]*=[[:space:]]*//ip;}' )"
   if [ -n "$val" ]; then
     echo "$val"
