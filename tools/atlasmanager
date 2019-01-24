@@ -3574,14 +3574,14 @@ main(){
                                 source /etc/atlasmanager/instances/${instance}.custom
                         else
                                 touch "/etc/atlasmanager/instances/${instance}.custom"
-                                echo "# Enter custom code in to this file that will be executed before is instance starts" > /etc/atlasmanager/instances/${instance}.custom
+                                echo "# Enter custom code into this file that will be executed before instance starts" > /etc/atlasmanager/instances/${instance}.custom
                         fi
                 elif [[ -f "${HOME}/.config/atlasmanager/instances/${instance}.cfg" ]]; then
                         if [[ -f "${HOME}/.config/atlasmanager/instances/${instance}.custom" ]]; then
                                 source ${HOME}/.config/atlasmanager/instances/${instance}.custom
                         else
                                 touch "${HOME}/.config/atlasmanager/instances/${instance}.custom"
-                                echo "# Enter custom code in to this file that will be executed before is instance starts" > ${HOME}/.config/atlasmanager/instances/${instance}.custom
+                                echo "# Enter custom code into this file that will be executed before instance starts" > ${HOME}/.config/atlasmanager/instances/${instance}.custom
                         fi
                 else
                         echo "Unable to locate instance config file for custom code execution."
