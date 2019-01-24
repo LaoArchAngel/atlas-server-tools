@@ -8,8 +8,8 @@
 
 # Script version
 atlasstVersion='1.8'
-atlasstTag='v1.8.1'
-atlasstCommit='6bf2920f8cd02f91492d9590791ddc7ddeda82b9'
+atlasstTag='v1.8.2'
+atlasstCommit='7ab9fc50625a67a881a155f0b0414ea3bebbc0a0'
 atlasstGithubRepo="BoiseComputer/atlas-server-tools"
 atlasstRootUseEnv=''
 atlasstGlobalCfgFile='/etc/atlasmanager/atlasmanager.cfg'
@@ -843,11 +843,40 @@ function isTheServerRunning(){
 # Check if the Redis server process is alive
 #
 function isTheRedisServerRunning(){
+if ! $redis_local; then
+	redis_success="PONG"
+	if [ ! -z "$atlas_GridConfig" ]; then
+	local redis_remote_ip=$(jq '.DatabaseConnections[0].URL' ${atlasserverroot}/ShooterGame/$atlas_GridConfig)
+	redis_remote_ip="${redis_remote_ip%\"}";redis_remote_ip="${redis_remote_ip#\"}";
+	local redis_remote_port="$(jq '.DatabaseConnections[0].Port' ${atlasserverroot}/ShooterGame/$atlas_GridConfig)"
+	local redis_remote_password="$(jq '.DatabaseConnections[0].Password' ${atlasserverroot}/ShooterGame/$atlas_GridConfig)"
+	redis_remote_password="${redis_remote_password%\"}";redis_remote_password="${redis_remote_password#\"}";
+	local redis_result="$(redis-cli -a $redis_remote_password -h $redis_remote_ip -p $redis_remote_port ping)"
+                if [[ "$redis_result" == "$redis_success" ]]; then
+			return 0
+		else
+			return 1
+		fi
+	else
+	local redis_remote_ip=$(jq '.DatabaseConnections[0].URL' ${atlasserverroot}/ShooterGame/ServerGrid.json)
+	redis_remote_ip="${redis_remote_ip%\"}";redis_remote_ip="${redis_remote_ip#\"}";
+	local redis_remote_port=$(jq '.DatabaseConnections[0].Port' ${atlasserverroot}/ShooterGame/ServerGrid.json)
+	local redis_remote_password=$(jq '.DatabaseConnections[0].Password' ${atlasserverroot}/ShooterGame/ServerGrid.json)
+	redis_remote_password="${redis_remote_password%\"}";redis_remote_password="${redis_remote_password#\"}";
+	local redis_result="$(redis-cli -a $redis_remote_password -h $redis_remote_ip -p $redis_remote_port ping)"
+		if [[ "$redis_result" == "$redis_success" ]]; then
+			return 0
+                else
+			return 1
+                fi
+	fi
+else
   if [ -n "`getRedisServerPID`" ]; then
     return 0
   else
     return 1
   fi
+fi
 }
 
 
@@ -1216,30 +1245,46 @@ doRun() {
 }
 
 doRedisStart() {
-  redisserverpid="$(getRedisServerPID)"
-if [ -n "$redisserverpid" ] && kill -0 "$redisserverpid"; then
-	logprint "Start aborted due to Redis server already running - pid: $redisserverpid"
+if ! $redis_local; then
+	echo "Redis is not hosted locally."
 else
-	tput sc
-	logprint "The Redis server is starting..."
-	cd $atlasserverroot/AtlasTools/RedisDatabase/
-       	redis-server "$redis_config_file" --daemonize yes --pidfile "$redis_pid_file"
-	logprint "The server is now running."
+      	redisserverpid="$(getRedisServerPID)"
+	if [ -n "$redisserverpid" ] && kill -0 "$redisserverpid"; then
+		logprint "Start aborted due to Redis server already running - pid: $redisserverpid"
+	else
+		tput sc
+		logprint "The Redis server is starting..."
+		cd $atlasserverroot/AtlasTools/RedisDatabase/
+	       	redis-server "$redis_config_file" --daemonize yes --pidfile "$redis_pid_file"
+		logprint "The server is now running."
+	fi
 fi
 }
 
 doRedisStop() {
-redis-cli -a "$redis_password" shutdown
+if ! $redis_local; then
+        echo "Redis is not hosted locally."
+else
+	redis-cli -a "$redis_password" shutdown
+fi
 }
 
 doRedisStatus() {
-if isTheRedisServerRunning ;then
-        echo -e "$NORMAL" "Redis DB location: " "$GREEN" "$atlasserverroot/AtlasTools/RedisDatabase/" "$NORMAL"
-        echo -e "$NORMAL" "Redis config location: " "$GREEN" "$redis_config_file" "$NORMAL"
-        echo -e "$NORMAL" "Redis Server running: " "$GREEN" "Yes" "$NORMAL"
-        echo -e "$NORMAL" "Redis Server PID: " "$GREEN" "$(getRedisServerPID)" "$NORMAL"
+if ! $redis_local; then
+	if isTheRedisServerRunning ;then
+                echo -e "$NORMAL" "Remote Redis Server running: " "$GREEN" "Yes" "$NORMAL"
+        else
+                echo -e "$NORMAL" "Remote Redis Server running: " "$RED" "No" "$NORMAL"
+        fi
 else
-        echo -e "$NORMAL" "Redis Server running: " "$RED" "No" "$NORMAL"
+	if isTheRedisServerRunning ;then
+        	echo -e "$NORMAL" "Redis DB location: " "$GREEN" "$atlasserverroot/AtlasTools/RedisDatabase/" "$NORMAL"
+	        echo -e "$NORMAL" "Redis config location: " "$GREEN" "$redis_config_file" "$NORMAL"
+	        echo -e "$NORMAL" "Redis Server running: " "$GREEN" "Yes" "$NORMAL"
+	        echo -e "$NORMAL" "Redis Server PID: " "$GREEN" "$(getRedisServerPID)" "$NORMAL"
+	else
+	        echo -e "$NORMAL" "Redis Server running: " "$RED" "No" "$NORMAL"
+	fi
 fi
 }
 
@@ -2999,11 +3044,19 @@ printStatus(){
   else
     echo -e "$NORMAL" "Server running: " "$RED" "No" "$NORMAL"
   fi
-  if isTheRedisServerRunning ;then
-    echo -e "$NORMAL" "Redis Server running: " "$GREEN" "Yes" "$NORMAL"
-    echo -e "$NORMAL" "Redis Server PID: " "$GREEN" "$(getRedisServerPID)" "$NORMAL"
+  if $redis_local; then
+  	if isTheRedisServerRunning ;then
+	    echo -e "$NORMAL" "Redis Server running: " "$GREEN" "Yes" "$NORMAL"
+	    echo -e "$NORMAL" "Redis Server PID: " "$GREEN" "$(getRedisServerPID)" "$NORMAL"
+	  else
+	    echo -e "$NORMAL" "Redis Server running: " "$RED" "No" "$NORMAL"
+	  fi
   else
-    echo -e "$NORMAL" "Redis Server running: " "$RED" "No" "$NORMAL"
+	  if isTheRedisServerRunning ;then
+            echo -e "$NORMAL" "Remote Redis Server running: " "$GREEN" "Yes" "$NORMAL"
+	  else
+	    echo -e "$NORMAL" "Remote Redis Server running: " "$RED" "No" "$NORMAL"
+	  fi
   fi
   if isTheServerUp ;then
     echo -e "$NORMAL" "Server listening: " "$RED" "No" "$NORMAL"
