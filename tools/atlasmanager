@@ -62,7 +62,7 @@ doUpgradeToolsFromCommit(){
   echo "Running install.sh"
   $sudo bash install.sh "$steamcmd_user" "${reinstall_args[@]}"
   result=$?
-  cd /
+  cd ~/
   rm -rf "$tmpdir"
 
   if [ "$result" = 0 ] || [ "$result" = 2 ]; then
