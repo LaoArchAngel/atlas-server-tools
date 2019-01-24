@@ -8,7 +8,7 @@
 
 # Script version
 atlasstVersion='1.8'
-atlasstTag='v1.8.2'
+atlasstTag='v1.8.3'
 atlasstCommit='7ab9fc50625a67a881a155f0b0414ea3bebbc0a0'
 atlasstGithubRepo="BoiseComputer/atlas-server-tools"
 atlasstRootUseEnv=''
@@ -3567,16 +3567,27 @@ main(){
         start)
           serverpid="$(getServerPID)"
           if [ -n "$serverpid" ] && kill -0 "$serverpid"; then
-                  echo "Error"
+                  echo "Error: server pid not detected"
           else
-                  if [[ -f "/etc/atlasmanager/instances/${instance}.custom" ]]; then
-                        source /etc/atlasmanager/instances/${instance}.custom
-                  else
-                        touch "/etc/atlasmanager/instances/${instance}.custom"
-                        echo "# Enter custom code in to this file that will be executed before is instance starts" > /etc/atlasmanager/instances/${instance}.custom
-                  fi
+                 if [[ /etc/atlasmanager/instances/${instance}.cfg ]]; then
+                        if [[ -f "/etc/atlasmanager/instances/${instance}.custom" ]]; then
+                                source /etc/atlasmanager/instances/${instance}.custom
+                        else
+                                touch "/etc/atlasmanager/instances/${instance}.custom"
+                                echo "# Enter custom code in to this file that will be executed before is instance starts" > /etc/atlasmanager/instances/${instance}.custom
+                        fi
+                elif [[ ${HOME}/.config/atlasmanager/instances/${instance}.cfg ]]; then
+                        if [[ -f "${HOME}/.config/atlasmanager/instances/${instance}.custom" ]]; then
+                                source ${HOME}/.config/atlasmanager/instances/${instance}.custom
+                        else
+                                touch "${HOME}/.config/atlasmanager/instances/${instance}.custom"
+                                echo "# Enter custom code in to this file that will be executed before is instance starts" > ${HOME}/.config/atlasmanager/instances/${instance}.custom
+                        fi
+                else
+                        echo "Unable to locate instance config file for custom code execution."
+                fi
           fi
-          doStart "${options[@]}"
+	  doStart "${options[@]}"
                 if [[ ${#instances[@]} != 1 ]]; then
                         if [[ ${instance} = $defaultinstance ]] && [[ ${#instances[@]} > 1 ]] || [[ $delayallstart == true ]]; then
                                 COUNTER=0
