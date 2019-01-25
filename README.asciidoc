@@ -20,7 +20,6 @@ WARNING: There is an issue when running ARK and ATLAS on the same machine. ARK r
 https://launchpad.net/~xapienz/+archive/ubuntu/curl34[Curl 3 and 4 Instructions]
 
 {empty} +
-
 IMPORTANT: If running under CentOS or RHEL, you will need the following packages installed:
 
 ```
@@ -33,7 +32,6 @@ bzip2
 jq
 ```
 {empty} +
-
 IMPORTANT: If running under Debian or Ubuntu, you will need the following packages installed:
 
 ```
@@ -46,7 +44,6 @@ bzip2
 jq
 ```
 {empty} +
-
 Common prerequisites which should normally already be installed are:
 ```
 >=bash-4.0
@@ -58,7 +55,6 @@ sed
 tar
 ```
 {empty} +
-
 To use ATLAS Server Tools, you will need to install **SteamCMD** following this guide:
 
 https://developer.valvesoftware.com/wiki/SteamCMD#Linux
@@ -66,7 +62,6 @@ https://developer.valvesoftware.com/wiki/SteamCMD#Linux
 We assume you have created the `steam` user to store steamcmd and your ATLAS server.
 
 {empty} +
-
 Requirements
 ~~~~~~~~~~~~
 
@@ -80,7 +75,6 @@ To allow your ATLAS server to communicate with the outside you have to open some
 ```
 
 {empty} +
-
 .#*2x2 Server Port Mapping Example (4 servers)*# +
 TIP: _The Game Port +1 usage has not been confirmed by Grapeshot. Subject to change._
 
@@ -93,7 +87,6 @@ TIP: _The Game Port +1 usage has not been confirmed by Grapeshot. Subject to cha
 |====
 
 {empty} +
-
 .How to open these ports on your Linux firewall:
 ```sh
 iptables -I INPUT -p udp --match multiport --dport 57550,57551,57552,57553 -j ACCEPT
@@ -106,7 +99,6 @@ iptables -I INPUT -p udp --match multiport --dport 27000,27001,27002,27003 -j AC
 ```
 
 {empty} +
-
 Install ATLAS Server Tools
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -125,7 +117,6 @@ To instead perform a user-install of ATLAS Server Tools as an unprivileged user,
 curl -sL http://git.io/fh4HA | bash -s -- --me
 
 {empty} +
-
 Configuration
 ~~~~~~~~~~~~~
 
@@ -165,7 +156,6 @@ If the RCONPort setting is shared between multiple instances, the server will ha
 See https://github.com/BoiseComputer/atlas-server-tools/wiki/Configuration-Files[Configuration Files] Wiki for more options.
 
 {empty} +
-
 Install ATLAS Server
 ~~~~~~~~~~~~~~~~~~~~
 
