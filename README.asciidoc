@@ -47,9 +47,6 @@ sed
 tar
 ```
 
-If using CentOS 6 or earlier, or Debian 7 or earlier, you will need to compile a newer version of glibc.
-See https://github.com/FezVrasta/ark-server-tools/wiki/Install-of-required-versions-of-glibc-and-gcc-on-RHEL-CentOS
-
 To use ATLAS Server Tools, you will need to install **SteamCMD** following this guide:
 
 https://developer.valvesoftware.com/wiki/SteamCMD#Linux
@@ -68,8 +65,6 @@ To allow your ATLAS server to communicate with the outside you have to open some
 2700X = Seamless Ports
 ```
 
-
-
 .#*2x2 Server Port Mapping Example (4 servers)*# +
 TIP: _The Game Port +1 usage has not been confirmed by Grapeshot. Subject to change._
 
@@ -80,6 +75,8 @@ TIP: _The Game Port +1 usage has not been confirmed by Grapeshot. Subject to cha
 |AtlasServer_03|57552|5754|5755|32332|27002
 |AtlasServer_04|57553|5756|5757|32333|27003
 |====
+
+
 
 .How to open these ports on your Linux firewall:
 ```sh
