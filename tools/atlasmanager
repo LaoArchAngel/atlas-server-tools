@@ -8,7 +8,7 @@
 
 # Script version
 atlasstVersion='1.8'
-atlasstTag='v1.8.3.2'
+atlasstTag='v1.8.3.3'
 atlasstCommit='7ab9fc50625a67a881a155f0b0414ea3bebbc0a0'
 atlasstGithubRepo="BoiseComputer/atlas-server-tools"
 atlasstRootUseEnv=''
@@ -844,6 +844,8 @@ function isTheServerRunning(){
 #
 function isTheRedisServerRunning(){
 if ! $redis_local; then
+   local jq_status="$(command -v jq)"
+   if [ -f "$jq_status" ]; then
 	redis_success="PONG"
 	if [ ! -z "$atlas_GridConfig" ]; then
 	local redis_remote_ip=$(jq '.DatabaseConnections[0].URL' ${atlasserverroot}/ShooterGame/$atlas_GridConfig)
@@ -870,6 +872,13 @@ if ! $redis_local; then
 			return 1
                 fi
 	fi
+   else
+        echo -e "$RED" "This feature requires jq." "$NORMAL"
+        echo -e " https://stedolan.github.io/jq/download/ for more information"
+        echo -e "$RED" "Ubuntu:""$GREEN" "apt-get install jq"
+        echo -e "$RED" "Centos:""$GREEN" "yum install jq"
+        return 1
+   fi
 else
   if [ -n "`getRedisServerPID`" ]; then
     return 0
@@ -1271,20 +1280,20 @@ fi
 
 doRedisStatus() {
 if ! $redis_local; then
-	if isTheRedisServerRunning ;then
-                echo -e "$NORMAL" "Remote Redis Server running: " "$GREEN" "Yes" "$NORMAL"
+        if isTheRedisServerRunning ;then
+                echo -e "$NORMAL" "Remote Redis Server running:" "$GREEN""Yes""$NORMAL"
         else
-                echo -e "$NORMAL" "Remote Redis Server running: " "$RED" "No" "$NORMAL"
+                echo -e "$NORMAL" "Remote Redis Server running:" "$RED""No""$NORMAL"
         fi
 else
-	if isTheRedisServerRunning ;then
-        	echo -e "$NORMAL" "Redis DB location: " "$GREEN" "$atlasserverroot/AtlasTools/RedisDatabase/" "$NORMAL"
-	        echo -e "$NORMAL" "Redis config location: " "$GREEN" "$redis_config_file" "$NORMAL"
-	        echo -e "$NORMAL" "Redis Server running: " "$GREEN" "Yes" "$NORMAL"
-	        echo -e "$NORMAL" "Redis Server PID: " "$GREEN" "$(getRedisServerPID)" "$NORMAL"
-	else
-	        echo -e "$NORMAL" "Redis Server running: " "$RED" "No" "$NORMAL"
-	fi
+        if isTheRedisServerRunning ;then
+                echo -e "$NORMAL" "Redis DB location:" "$GREEN""$atlasserverroot/AtlasTools/RedisDatabase/""$NORMAL"
+                echo -e "$NORMAL" "Redis config location:" "$GREEN""$redis_config_file""$NORMAL"
+                echo -e "$NORMAL" "Redis Server running:" "$GREEN""Yes""$NORMAL"
+                echo -e "$NORMAL" "Redis Server PID:" "$GREEN""$(getRedisServerPID)""$NORMAL"
+        else
+                echo -e "$NORMAL" "Redis Server running:" "$RED""No""$NORMAL"
+        fi
 fi
 }
 
