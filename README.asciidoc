@@ -23,7 +23,8 @@ libstdc++.i686
 bzip2
 jq
 ```
-
+{empty} +
+{empty} +
 IMPORTANT: If running under Debian or Ubuntu, you will need the following packages installed:
 
 ```
@@ -35,7 +36,8 @@ lib32gcc1
 bzip2
 jq
 ```
-
+{empty} +
+{empty} +
 Common prerequisites which should normally already be installed are:
 ```
 >=bash-4.0
@@ -46,7 +48,8 @@ rsync
 sed
 tar
 ```
-
+{empty} +
+{empty} +
 To use ATLAS Server Tools, you will need to install **SteamCMD** following this guide:
 
 https://developer.valvesoftware.com/wiki/SteamCMD#Linux
