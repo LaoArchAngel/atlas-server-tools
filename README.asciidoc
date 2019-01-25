@@ -13,6 +13,14 @@ Prerequisites
 
 ATLAS Server Tools requires certain packages be installed in order to function correctly.
 
+{empty} +
+
+WARNING: There is an issue when running ARK and ATLAS on the same machine. ARK requires Curl 4 and ATLAS requires Curl 3. As a workaround a special package containing both versions must be installed. +
+
+https://launchpad.net/~xapienz/+archive/ubuntu/curl34[Curl 3 and 4 Instructions]
+
+{empty} +
+
 IMPORTANT: If running under CentOS or RHEL, you will need the following packages installed:
 
 ```
