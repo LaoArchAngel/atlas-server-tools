@@ -8,7 +8,7 @@
 
 # Script version
 atlasstVersion='1.8'
-atlasstTag='v1.8.3.3'
+atlasstTag='v1.8.3.4'
 atlasstCommit='7ab9fc50625a67a881a155f0b0414ea3bebbc0a0'
 atlasstGithubRepo="BoiseComputer/atlas-server-tools"
 atlasstRootUseEnv=''
