@@ -13,7 +13,7 @@ Prerequisites
 
 ATLAS Server Tools requires certain packages be installed in order to function correctly.
 
-If running under CentOS or RHEL, you will need the following packages installed:
+IMPORTANT: If running under CentOS or RHEL, you will need the following packages installed:
 ```
 perl-Compress-Zlib
 curl
@@ -21,9 +21,10 @@ lsof
 glibc.i686
 libstdc++.i686
 bzip2
+jq
 ```
 
-If running under Debian or Ubuntu, you will need the following packages installed:
+IMPORTANT: If running under Debian or Ubuntu, you will need the following packages installed:
 
 ```
 perl-modules
@@ -32,6 +33,7 @@ lsof
 libc6-i386
 lib32gcc1
 bzip2
+jq
 ```
 
 Common prerequisites which should normally already be installed are:
@@ -57,8 +59,8 @@ We assume you have created the `steam` user to store steamcmd and your ATLAS ser
 Requirements
 ~~~~~~~~~~~~
 
-To allow your ATLAS server to communicate with the outside you have to open some ports in your firewall:
-(Example ports for a 4 server grid)
+To allow your ATLAS server to communicate with the outside you have to open some ports in your firewall: +
+(Example port ranges for a 4 server grid)
 ```
 5755X = Query Ports
 575X = Game Client Ports (Leave + 1 space between servers until requirement is confirmed by Grapeshot)
@@ -66,6 +68,20 @@ To allow your ATLAS server to communicate with the outside you have to open some
 2700X = Seamless Ports
 ```
 
+
+
+.#*2x2 Server Port Mapping Example (4 servers)*# +
+TIP: _The Game Port +1 usage has not been confirmed by Grapeshot. Subject to change._
+
+|====
+|Server |Query Port|Game Port|Game Port +1|RCON Port| Seamless Port
+|AtlasServer_01|57550|5750|5751|32330|27000
+|AtlasServer_02|57551|5752|5753|32331|27001
+|AtlasServer_03|57552|5754|5755|32332|27002
+|AtlasServer_04|57553|5756|5757|32333|27003
+|====
+
+.How to open these ports on your Linux firewall:
 ```sh
 iptables -I INPUT -p udp --match multiport --dport 57550,57551,57552,57553 -j ACCEPT
 iptables -I INPUT -p tcp --match multiport --dport 57550,57551,57552,57553 -j ACCEPT
