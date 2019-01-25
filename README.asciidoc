@@ -14,6 +14,7 @@ Prerequisites
 ATLAS Server Tools requires certain packages be installed in order to function correctly.
 
 IMPORTANT: If running under CentOS or RHEL, you will need the following packages installed:
+
 ```
 perl-Compress-Zlib
 curl
@@ -25,6 +26,7 @@ jq
 ```
 {empty} +
 {empty} +
+
 IMPORTANT: If running under Debian or Ubuntu, you will need the following packages installed:
 
 ```
@@ -56,6 +58,9 @@ https://developer.valvesoftware.com/wiki/SteamCMD#Linux
 
 We assume you have created the `steam` user to store steamcmd and your ATLAS server.
 
+{empty} +
+{empty} +
+
 Requirements
 ~~~~~~~~~~~~
 
@@ -68,6 +73,9 @@ To allow your ATLAS server to communicate with the outside you have to open some
 2700X = Seamless Ports
 ```
 
+{empty} +
+{empty} +
+
 .#*2x2 Server Port Mapping Example (4 servers)*# +
 TIP: _The Game Port +1 usage has not been confirmed by Grapeshot. Subject to change._
 
@@ -79,7 +87,8 @@ TIP: _The Game Port +1 usage has not been confirmed by Grapeshot. Subject to cha
 |AtlasServer_04|57553|5756|5757|32333|27003
 |====
 
-
+{empty} +
+{empty} +
 
 .How to open these ports on your Linux firewall:
 ```sh
@@ -92,7 +101,8 @@ iptables -I INPUT -p tcp --match multiport --dport 27000,27001,27002,27003 -j AC
 iptables -I INPUT -p udp --match multiport --dport 27000,27001,27002,27003 -j ACCEPT
 ```
 
-NB: Change the ports according to the ones set in your `atlasmanager.cfg` file.
+{empty} +
+{empty} +
 
 Install ATLAS Server Tools
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -110,6 +120,9 @@ To instead perform a user-install of ATLAS Server Tools as an unprivileged user,
 
 [source,sh]
 curl -sL http://git.io/fh4HA | bash -s -- --me
+
+{empty} +
+{empty} +
 
 Configuration
 ~~~~~~~~~~~~~
@@ -148,6 +161,9 @@ without being able to be queried.
 If the RCONPort setting is shared between multiple instances, the server will hang at 0/0 players.
 
 See https://github.com/BoiseComputer/atlas-server-tools/wiki/Configuration-Files[Configuration Files] Wiki for more options.
+
+{empty} +
+{empty} +
 
 Install ATLAS Server
 ~~~~~~~~~~~~~~~~~~~~
