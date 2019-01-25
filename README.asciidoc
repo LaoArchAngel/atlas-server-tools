@@ -79,11 +79,11 @@ To allow your ATLAS server to communicate with the outside you have to open some
 TIP: The Game Port +1 usage has not been confirmed by Grapeshot. Subject to change.
 
 |====
-|Server |Query Port|Game Port|Game Port +1|RCON Port| Seamless Port
-|AtlasServer_01|57550|5750|5751|32330|27000
-|AtlasServer_02|57551|5752|5753|32331|27001
-|AtlasServer_03|57552|5754|5755|32332|27002
-|AtlasServer_04|57553|5756|5757|32333|27003
+|Server |Grid Location|Query Port|Game Port|Game Port +1|RCON Port| Seamless Port
+|AtlasServer_01|A1|57550|5750|5751|32330|27000
+|AtlasServer_02|B1|57551|5752|5753|32331|27001
+|AtlasServer_03|A2|57552|5754|5755|32332|27002
+|AtlasServer_04|B2|57553|5756|5757|32333|27003
 |====
 
 
