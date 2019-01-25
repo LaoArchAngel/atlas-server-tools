@@ -14,12 +14,14 @@ Prerequisites
 ATLAS Server Tools requires certain packages be installed in order to function correctly.
 
 {empty} +
-*WARNING*: There is an issue when running ARK and ATLAS on the same machine. ARK requires Curl 4 and ATLAS requires Curl 3. As a workaround a special package containing both versions must be installed. +
+
+WARNING: There is an issue when running ARK and ATLAS on the same machine. ARK requires Curl 4 and ATLAS requires Curl 3. As a workaround a special package containing both versions must be installed. +
 
 https://launchpad.net/~xapienz/+archive/ubuntu/curl34[Curl 3 and 4 Instructions]
+
 {empty} +
 
-*IMPORTANT*: If running under CentOS or RHEL, you will need the following packages installed:
+IMPORTANT: If running under CentOS or RHEL, you will need the following packages installed:
 
 ```
 perl-Compress-Zlib
@@ -32,7 +34,7 @@ jq
 ```
 {empty} +
 
-*IMPORTANT*: If running under Debian or Ubuntu, you will need the following packages installed:
+IMPORTANT: If running under Debian or Ubuntu, you will need the following packages installed:
 
 ```
 perl-modules
@@ -43,7 +45,7 @@ lib32gcc1
 bzip2
 jq
 ```
-{empty} +
+
 Common prerequisites which should normally already be installed are:
 ```
 >=bash-4.0
@@ -55,18 +57,15 @@ sed
 tar
 ```
 {empty} +
-To use ATLAS Server Tools, you will need to install **SteamCMD** following this guide:
-
-https://developer.valvesoftware.com/wiki/SteamCMD#Linux
-
-We assume you have created the `steam` user to store steamcmd and your ATLAS server.
-{empty} +
+To use ATLAS Server Tools, you will need to install **SteamCMD** following this guide: +
+https://developer.valvesoftware.com/wiki/SteamCMD#Linux +
+We assume you have created the `steam` user to store steamcmd and your ATLAS server. +
 
 Requirements
 ~~~~~~~~~~~~
 
 To allow your ATLAS server to communicate with the outside you have to open some ports in your firewall: +
-(Example port ranges for a 4 server grid)
+*(Example port ranges for a 4 server grid)*
 ```
 5755X = Query Ports
 575X = Game Client Ports (Leave + 1 space between servers until requirement is confirmed by Grapeshot)
@@ -75,8 +74,9 @@ To allow your ATLAS server to communicate with the outside you have to open some
 ```
 
 {empty} +
+
 .#*2x2 Server Port Mapping Example (4 servers)*# +
-TIP: _The Game Port +1 usage has not been confirmed by Grapeshot. Subject to change._
+TIP: The Game Port +1 usage has not been confirmed by Grapeshot. Subject to change.
 
 |====
 |Server |Query Port|Game Port|Game Port +1|RCON Port| Seamless Port
@@ -85,7 +85,7 @@ TIP: _The Game Port +1 usage has not been confirmed by Grapeshot. Subject to cha
 |AtlasServer_03|57552|5754|5755|32332|27002
 |AtlasServer_04|57553|5756|5757|32333|27003
 |====
-{empty} +
+
 
 .How to open these ports on your Linux firewall:
 ```sh
@@ -98,7 +98,6 @@ iptables -I INPUT -p tcp --match multiport --dport 27000,27001,27002,27003 -j AC
 iptables -I INPUT -p udp --match multiport --dport 27000,27001,27002,27003 -j ACCEPT
 ```
 
-{empty} +
 
 Install ATLAS Server Tools
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -117,7 +116,6 @@ To instead perform a user-install of ATLAS Server Tools as an unprivileged user,
 [source,sh]
 curl -sL http://git.io/fh4HA | bash -s -- --me
 
-{empty} +
 
 Configuration
 ~~~~~~~~~~~~~
@@ -156,7 +154,7 @@ without being able to be queried.
 If the RCONPort setting is shared between multiple instances, the server will hang at 0/0 players.
 
 See https://github.com/BoiseComputer/atlas-server-tools/wiki/Configuration-Files[Configuration Files] Wiki for more options.
-{empty} +
+
 
 Install ATLAS Server
 ~~~~~~~~~~~~~~~~~~~~
