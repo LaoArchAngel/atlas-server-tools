@@ -27,4 +27,4 @@ atlas_AltSaveDirectoryName="A1"                                       #Set this 
 
 atlas_ServerX=0                                                       # Enter the grid X position of this instance.
 atlas_ServerY=0                                                       # Enter the grid Y position of this instance.
-#GridConfig="ServerGrid.json"                                      # Enter custom filename of json file for your map grid.
+#atlas_GridConfig="ServerGrid.json"                                   # Enter custom filename of json file for your map grid.
