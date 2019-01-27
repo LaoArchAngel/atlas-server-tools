@@ -6,6 +6,9 @@
 # Maintainer:           boisecomputer
 # Contributors:         FezVrasta, Sispheor, Atriusftw, klightspeed, lexat, puseidr
 
+#disable exportall so options are no exported under Debian et al.
+set +o allexport
+
 # Script version
 atlasstVersion='1.8'
 atlasstTag='v1.8.3.5'
@@ -214,7 +217,7 @@ if [ -f "${HOME}/${atlasstUserCfgFile}" ]; then
     source "${HOME}/${atlasstUserCfgFile}"
 fi
 
-if [ -n "${serverbasedir}" && -d "${serverbasedir}" ]; then
+if [[ -n "${serverbasedir}" && -d "${serverbasedir}" ]]; then
     cd "${serverbasedir}"
 elif [ -d "${HOME}" ]; then
     cd "${HOME}"
