@@ -11,12 +11,14 @@ set +o allexport
 
 # Script version
 atlasstVersion='1.8'
-atlasstTag='v1.8.3.5'
+atlasstTag='v1.8.3.6'
 atlasstCommit='7ab9fc50625a67a881a155f0b0414ea3bebbc0a0'
 atlasstGithubRepo="BoiseComputer/atlas-server-tools"
 atlasstRootUseEnv=''
 atlasstGlobalCfgFile='/etc/atlasmanager/atlasmanager.cfg'
 atlasstUserCfgFile='.atlasmanager.cfg'
+
+
 
 doUpgradeTools() {
   local sudo=sudo
@@ -3178,26 +3180,58 @@ printStatus(){
 
 getAllInstanceNames(){
   declare -A instancenames
-  for varname in "${!configfile_@}"; do
-    instancename="${varname#configfile_}"
-    instancenames[${instancename}]="${instancename}"
+  if [ -n "${defaultinstance}" ]; then
+    instancenames[${defaultinstance}]="${defaultinstance}"
+    echo "${defaultinstance}"
+  fi
+  if [ -f "${HOME}/${atlasstUserCfgFile}" ]; then
+    while read l <&3; do
+      v="${l%%=*}"
+      if [[ "${v}" = configfile_* ]]; then
+        if [ -n "${!v}" ]; then
+          instancename="${v#configfile_}"
+          if [ -z "${instancenames[${instancename}]}" ]; then
+            instancenames[${instancename}]="${instancename}"
+            echo "${instancename}"
+          fi
+        fi
+      fi
+    done 3<"${HOME}/${atlasstUserCfgFile}"
+  fi
+  if [ -f "${atlasstGlobalCfgFile}" ]; then
+    while read l <&3; do
+      v="${l%%=*}"
+      if [[ "${v}" = configfile_* ]]; then
+        if [ -n "${!v}" ]; then
+          instancename="${v#configfile_}"
+          if [ -z "${instancenames[${instancename}]}" ]; then
+            instancenames[${instancename}]="${instancename}"
+            echo "${instancename}"
+          fi
+        fi
+      fi
+    done 3<"${atlasstGlobalCfgFile}"
+  fi
+  for f in ${HOME}/.config/atlasmanager/instances/*.cfg; do
+    if [ -f "${f}" ]; then
+      instancename="${f##*/}"
+      instancename="${instancename%.cfg}"
+      if [ -z "${instancenames[${instancename}]}" ]; then
+        instancenames[${instancename}]="${instancename}"
+        echo "${instancename}"
+      fi
+    fi
   done
   for f in /etc/atlasmanager/instances/*.cfg; do
     if [ -f "${f}" ]; then
       instancename="${f##*/}"
       instancename="${instancename%.cfg}"
-      instancenames[${instancename}]="${instancename}"
+      if [ -z "${instancenames[${instancename}]}" ]; then
+        instancenames[${instancename}]="${instancename}"
+        echo "${instancename}"
+      fi
     fi
   done
-  for f in ${HOME}/.config/atlasmanager/instances/*.cfg; do
-    if [ -f "${f}" ]; then
-      instancename="${f##*/}"
-      instancename="${instancename%.cfg}"
-      instancenames[${instancename}]="${instancename}"
-    fi
-  done
-
-  echo "${instancenames[@]}"
 }
 
 doListAllInstances(){
