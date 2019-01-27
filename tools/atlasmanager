@@ -11,8 +11,8 @@ set +o allexport
 
 # Script version
 atlasstVersion='1.8'
-atlasstTag='v1.8.3.6'
-atlasstCommit='7ab9fc50625a67a881a155f0b0414ea3bebbc0a0'
+atlasstTag='v1.8.3.7'
+atlasstCommit='79e062e63eed0994bd0b451a9b525a80630de11d'
 atlasstGithubRepo="BoiseComputer/atlas-server-tools"
 atlasstRootUseEnv=''
 atlasstGlobalCfgFile='/etc/atlasmanager/atlasmanager.cfg'
@@ -1343,30 +1343,29 @@ doStart() {
   serverpid="$(getServerPID)"
 
   if [ -n "$serverpid" ] && kill -0 "$serverpid"; then
-	echo "Error: server pid not detected"
-  else
-	if [[ -f "/etc/atlasmanager/instances/${instance}.cfg" ]]; then
-		if [[ -f "/etc/atlasmanager/instances/${instance}.custom" ]]; then
-			source /etc/atlasmanager/instances/${instance}.custom
-		else
-			touch "/etc/atlasmanager/instances/${instance}.custom"
-			echo "# Enter custom code into this file that will be executed before instance starts" > /etc/atlasmanager/instances/${instance}.custom
-		fi
-	elif [[ -f "${HOME}/.config/atlasmanager/instances/${instance}.cfg" ]]; then
-		if [[ -f "${HOME}/.config/atlasmanager/instances/${instance}.custom" ]]; then
-			source ${HOME}/.config/atlasmanager/instances/${instance}.custom
-		else
-			touch "${HOME}/.config/atlasmanager/instances/${instance}.custom"
-			echo "# Enter custom code into this file that will be executed before instance starts" > ${HOME}/.config/atlasmanager/instances/${instance}.custom
-		fi
-	else
-		echo "Unable to locate instance config file for custom code execution."
-	fi
-  fi
-
-  if [ -n "$serverpid" ] && kill -0 "$serverpid"; then
     logprint "Start aborted due to server already running - pid: $serverpid"
   else
+    local prestart="${configfile%.cfg}.start"
+    local precustom="${configfile%.cfg}.custom"		# To maintain compatibility with previous code
+    if [[ -n "$atlasPreStart" || -n "$prestart" || -n "$precustom" ]]; then
+      if [ -n "${atlasPreStart}" ]; then
+        prestart="${atlasPreStart}"
+      fi
+      if [[ -n "${prestart}" && -f "${prestart}" ]]; then
+        if [ -x "${prestart}" ]; then
+          "${prestart}" "$@"
+        else
+          /bin/bash "${prestart}" "$@"
+        fi
+      elif [[ -n "${precustom}" && -f "${precustom}" ]]; then
+        if [ -x "${precustom}" ]; then
+          "${precustom}" "$@"
+        else
+          /bin/bash "${precustom}" "$@"
+        fi
+      fi
+    fi
+
     if [ "$atlasAutoUpdateOnStart" == "true" ]; then
       if ! [[ " $* " =~ " --noautoupdate " ]]; then
         logprint "Checking for updates before starting"
