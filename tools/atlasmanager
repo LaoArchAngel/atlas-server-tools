@@ -3,12 +3,12 @@
 # ATLAS manager
 #
 # Original author:      LeXaT
-# Maintainer:           FezVrasta
-# Contributors:         Sispheor, Atriusftw, klightspeed, lexat, puseidr, boisecomputer
+# Maintainer:           boisecomputer
+# Contributors:         FezVrasta, Sispheor, Atriusftw, klightspeed, lexat, puseidr
 
 # Script version
 atlasstVersion='1.8'
-atlasstTag='v1.8.3.4'
+atlasstTag='v1.8.3.5'
 atlasstCommit='7ab9fc50625a67a881a155f0b0414ea3bebbc0a0'
 atlasstGithubRepo="BoiseComputer/atlas-server-tools"
 atlasstRootUseEnv=''
