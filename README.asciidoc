@@ -5,6 +5,13 @@
 This tool allows you to manage any ATLAS linux server without having to remember long commands.
 It provides a lot of features, to get the full list check the https://github.com/BoiseComputer/atlas-server-tools/wiki/Command-Line-Usage[Usage] Wiki section.
 
+Quick Start
+-----------
+
+https://github.com/BoiseComputer/atlas-server-tools/wiki/Quick-Start[View Quick Start Guide]
+
+I have put together a set of commands to help you get a 2x2 server up as quicky as possible. The setup is mostly automated and and should have a server up and running within minutes. You will want to go in and adjust server names and any customization you would like after the install and setup are fully completed.
+
 Installation
 ------------
 
