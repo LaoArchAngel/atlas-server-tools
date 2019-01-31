@@ -1132,7 +1132,7 @@ doRun() {
     if [ ${name,,} == "battleye" ]; then
       val="${!varname}"
       if [ ${val,,} == "false" ]; then
-        name=NoBattleEye
+        name=NoBattlEye
       fi
     fi
     atlasextraopts=( "${atlasextraopts[@]}" "-${name}" )
