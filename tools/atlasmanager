@@ -1029,7 +1029,7 @@ doRun() {
     echo "Aborting - two servers MUST NOT run from the same directory"
     exit 1
   fi
-  
+
   # $$ returns the main process, $BASHPID returns the current process
   echo "$BASHPID" >"${atlasserverroot}/${atlasmanagerpidfile}"
 
@@ -1129,7 +1129,12 @@ doRun() {
   # bring in atlasflag_... flags
   for varname in "${!atlasflag_@}"; do
     name="${varname#atlasflag_}"
-
+    if [ $name == "BattlEye" ]; then
+      val="${!varname}"
+      if [ $val == "false" ]; then
+        name=NoBattleEye
+      fi
+    fi
     atlasextraopts=( "${atlasextraopts[@]}" "-${name}" )
   done
 
@@ -1374,12 +1379,12 @@ doStart() {
     if [[ " $* " =~ " --alwaysrestart " ]]; then
       atlasAlwaysRestartOnCrash=true
     fi
-    
+
     nobackground=
     if [[ " $* " =~ " --no-background " ]]; then
       nobackground=1
     fi
-    
+
     tput sc
     logprint "The server is starting..."
 
@@ -1424,7 +1429,7 @@ doStart() {
         done
         echo
       fi
-    fi    
+    fi
   fi
 }
 
@@ -1708,9 +1713,9 @@ printWarnMessage(){
 isUpdateCancelRequested(){
   if [ -n "$chatCommandRestartCancel" ]; then
     local canceltime="$(
-      find "${atlasserverroot}/${atlasserverdir}/Saved/Logs" -name 'ServerGame.*.log' -mmin -5 -print0 | 
-        xargs -0 grep -F -e "${chatCommandRestartCancel}" | 
-        sed 's@^[[]\(....\)\.\(..\)\.\(..\)-\(..\)\.\(..\)\.\(..\):.*@\1-\2-\3 \4:\5:\6 UTC@' | 
+      find "${atlasserverroot}/${atlasserverdir}/Saved/Logs" -name 'ServerGame.*.log' -mmin -5 -print0 |
+        xargs -0 grep -F -e "${chatCommandRestartCancel}" |
+        sed 's@^[[]\(....\)\.\(..\)\.\(..\)-\(..\)\.\(..\)\.\(..\):.*@\1-\2-\3 \4:\5:\6 UTC@' |
         head -n1)"
     if [ -n canceltime ]; then
       canceltime="$(date +%s --date="${canceltime}")"
@@ -2073,7 +2078,7 @@ doUpdate() {
           logprint "Unable to find saved atlass directory"
         else
           mapfile="${savedir}/${mapname}.atlas"
-  
+
           if [ ! -f "${mapfile}" ]; then
             sleep 2
           fi
@@ -2220,7 +2225,7 @@ checkForModUpdate(){
   if [[ " $* " =~ " --revstatus " ]]; then
     revstatcode=1
   fi
-  
+
   if [ ! -d "${steamworkshopdir}" ]; then
     echo "Error: ${steamworkshopdir} does not exist"
     if [ -n "$revstatcode" ]; then return 4; else return 0; fi
@@ -2850,7 +2855,7 @@ doBackup(){
   echo -ne "${NORMAL} Copying ATLAS world file (${mapname}) "
 
   local mapfile="${savedir}/${mapname}.atlas"
-  
+
   cp -p "${mapfile}" "${backupdir}/${mapname}.atlas"
   if [ ! -f "${backupdir}/${mapname}.atlas" ]; then
     sleep 2
@@ -2973,10 +2978,10 @@ doBackup(){
   else
     echo -e "${NORMAL}\e[68G[ ${RED}FAILED${NORMAL} ]"
   fi
-   
-   
+
+
    echo -ne "${NORMAL} Copying Game.ini "
-  
+
   cp -p "${savedcfgdir}/Game.ini" "${backupdir}/Game.ini"
   if [ ! -s "${backupdir}/Game.ini" ]; then
     sleep 2
@@ -2987,8 +2992,8 @@ doBackup(){
   else
     echo -e "${NORMAL}\e[68G[ ${RED}FAILED${NORMAL} ]"
   fi
-  
-  
+
+
   #Tar the files and remove the original Backup Directory.  Saves about 50MB of disk space per backup
 
   echo -ne "${NORMAL} Compressing Backup "
@@ -3317,10 +3322,10 @@ addAtlasOpt() {
   local optname="${1%%=*}"
   local optval="${1#*=}"
   local optdash="${optname:0:1}"
-  
+
   optname="${optname#-}"
   optname="${optname//[^A-Za-z0-9_]/_}"
-  
+
   if [[ "${optval}" == "${optname}" ]]; then
     optval=""
   fi
@@ -3449,7 +3454,7 @@ EOE
 main(){
   # check the configuration and throw errors or warnings if needed
   checkConfig
-  
+
   status=0
 
   while true; do
