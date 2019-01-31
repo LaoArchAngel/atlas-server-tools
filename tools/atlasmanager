@@ -1129,9 +1129,9 @@ doRun() {
   # bring in atlasflag_... flags
   for varname in "${!atlasflag_@}"; do
     name="${varname#atlasflag_}"
-    if [ $name == "BattlEye" ]; then
+    if [ ${name,,} == "battleye" ]; then
       val="${!varname}"
-      if [ $val == "false" ]; then
+      if [ ${val,,} == "false" ]; then
         name=NoBattleEye
       fi
     fi
