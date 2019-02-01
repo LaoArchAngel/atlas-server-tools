@@ -19,12 +19,14 @@ atlas_MaxPlayers="70"
 atlas_AltSaveDirectoryName="A1"                                       #Set this to a unique folder name for each instance.
 
 # ATLAS server flags - use atlasflag_<optionname>=true
+#atlasflag_NoBattlEye=true                                            # Uncomment this to disable BattlEye for this instance.
 #atlasflag_OnlyAdminRejoinAsSpectator=true                            # Uncomment to only allow admins to rejoin as spectator
 #atlasflag_DisableDeathSpectator=true                                 # Uncomment to disable players from becoming spectators when they die
 
 # ATLAS server options - i.e. for -optname=val, use atlasopt_optname=val
 #atlasopt_StructureDestructionTag=DestroySwampSnowStructures
 
+# ATLAS grid options
 atlas_ServerX=0                                                       # Enter the grid X position of this instance.
 atlas_ServerY=0                                                       # Enter the grid Y position of this instance.
 #atlas_GridConfig="ServerGrid.json"                                   # Enter custom filename of json file for your map grid.
