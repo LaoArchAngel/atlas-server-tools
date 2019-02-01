@@ -360,9 +360,13 @@ getAtlasServerSetting() {
       return
     fi
   done
-  local val="$(tr -d '\0\376\377' <"${atlasserverroot}/${atlasserverdir}/Saved/${atlas_AltSaveDirectoryName}/Config/LinuxServer/GameUserSettings.ini" | sed -n '/^\[ServerSettings\]/,/^\[.*\]/{s/^'"$1"'[[:space:]]*=[[:space:]]*//ip;}' )"
-  if [ -n "$val" ]; then
-    echo "$val"
+  if [ -f "${atlasserverroot}/${atlasserverdir}/Saved/${atlas_AltSaveDirectoryName}/Config/LinuxServer/GameUserSettings.ini" ]; then
+      local val="$(tr -d '\0\376\377' <"${atlasserverroot}/${atlasserverdir}/Saved/${atlas_AltSaveDirectoryName}/Config/LinuxServer/GameUserSettings.ini" | sed -n '/^\[ServerSettings\]/,/^\[.*\]/{s/^'"$1"'[[:space:]]*=[[:space:]]*//ip;}' )"
+      if [ -n "$val" ]; then
+    	echo "$val"
+      else
+    	echo "$2"
+      fi
   else
     echo "$2"
   fi
