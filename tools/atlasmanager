@@ -11,7 +11,7 @@ set +o allexport
 
 # Script version
 atlasstVersion='1.8'
-atlasstTag='v1.8.4.0'
+atlasstTag='v1.8.4.1'
 atlasstCommit='79e062e63eed0994bd0b451a9b525a80630de11d'
 atlasstGithubRepo="BoiseComputer/atlas-server-tools"
 atlasstRootUseEnv=''
@@ -2854,7 +2854,7 @@ doBackup(){
     return 1
   fi
 
-  echo "${NORMAL} Saved atlass directory is ${savedir}"
+  echo -e "${NORMAL} Saved ATLAS directory is ${savedir}"
 
   # ATLAS server uses Write-Unlink-Rename
   echo -ne "${NORMAL} Copying ATLAS world file (${mapname,,}) "
