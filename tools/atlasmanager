@@ -2082,7 +2082,7 @@ doUpdate() {
         if [ -z "$savedir" ]; then
           logprint "Unable to find saved atlass directory"
         else
-          mapfile="${savedir}/${mapname}.atlas"
+          mapfile="${savedir}/${mapname,,}.atlas"
 
           if [ ! -f "${mapfile}" ]; then
             sleep 2
@@ -2857,25 +2857,25 @@ doBackup(){
   echo "${NORMAL} Saved atlass directory is ${savedir}"
 
   # ATLAS server uses Write-Unlink-Rename
-  echo -ne "${NORMAL} Copying ATLAS world file (${mapname}) "
+  echo -ne "${NORMAL} Copying ATLAS world file (${mapname,,}) "
 
-  local mapfile="${savedir}/${mapname}.atlas"
+  local mapfile="${savedir}/${mapname,,}.atlas"
 
-  cp -p "${mapfile}" "${backupdir}/${mapname}.atlas"
-  if [ ! -f "${backupdir}/${mapname}.atlas" ]; then
+  cp -p "${mapfile}" "${backupdir}/${mapname,,}.atlas"
+  if [ ! -f "${backupdir}/${mapname,,}.atlas" ]; then
     sleep 2
-    cp -p "${mapfile}" "${backupdir}/${mapname}.atlas"
+    cp -p "${mapfile}" "${backupdir}/${mapname,,}.atlas"
   fi
-  if [ ! -f "${backupdir}/${mapname}.atlas" ]; then
-    cp -p "${mapfile%.atlas}.tmp" "${backupdir}/${mapname}.atlas"
-    if [ -f "${backupdir}/${mapname}.atlas" ]; then
+  if [ ! -f "${backupdir}/${mapname,,}.atlas" ]; then
+    cp -p "${mapfile%.atlas}.tmp" "${backupdir}/${mapname,,}.atlas"
+    if [ -f "${backupdir}/${mapname,,}.atlas" ]; then
       echo "${NORMAL}\e[68G[  ${YELLOW}WARN${NORMAL}  ]"
       logprint "Saved atlas file not found, but temporary file was"
     else
       echo "${NORMAL}\e[68G[ ${RED}FAILED${NORMAL} ]"
-      cimapfile="$(find "${savedir}" -maxdepth 1 -iname "${mapname}.atlas" -or -iname "${mapname}.tmp" | head -n1)"
+      cimapfile="$(find "${savedir}" -maxdepth 1 -iname "${mapname,,}.atlas" -or -iname "${mapname,,}.tmp" | head -n1)"
       if [ -n "${mapfile}" ]; then
-        logprint "Inconsistent casing in map name - ${mapname}.atlas does not exist, but ${cimapfile##*/} does"
+        logprint "Inconsistent casing in map name - ${mapname,,}.atlas does not exist, but ${cimapfile##*/} does"
       else
         logprint "Saved atlas file could not be found"
         logprint "Candidates:"
