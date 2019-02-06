@@ -99,10 +99,8 @@ TIP: The Game Port +1 usage has not been confirmed by Grapeshot. Subject to chan
 iptables -I INPUT -p udp --match multiport --dport 57550,57551,57552,57553 -j ACCEPT
 iptables -I INPUT -p tcp --match multiport --dport 57550,57551,57552,57553 -j ACCEPT
 iptables -I INPUT -p udp --match multiport --dport 5750,5751,5752,5753,5754,5755,5756,5757 -j ACCEPT
-iptables -I INPUT -p tcp --match multiport --dport 5750,5751,5752,5753,5754,5755,5756,5757 -j ACCEPT
 iptables -I INPUT -p tcp --match multiport --dport 32330,32331,32332,32333 -j ACCEPT
 iptables -I INPUT -p tcp --match multiport --dport 27000,27001,27002,27003 -j ACCEPT
-iptables -I INPUT -p udp --match multiport --dport 27000,27001,27002,27003 -j ACCEPT
 ```
 
 
