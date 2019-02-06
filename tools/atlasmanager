@@ -11,7 +11,7 @@ set +o allexport
 
 # Script version
 atlasstVersion='1.8'
-atlasstTag='v1.8.3.9'
+atlasstTag='v1.8.4.0'
 atlasstCommit='79e062e63eed0994bd0b451a9b525a80630de11d'
 atlasstGithubRepo="BoiseComputer/atlas-server-tools"
 atlasstRootUseEnv=''
