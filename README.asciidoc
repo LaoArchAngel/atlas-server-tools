@@ -1,7 +1,5 @@
 = ATLAS Linux Server Tools
 
-(Mostly stable)
-
 This tool allows you to manage any ATLAS linux server without having to remember long commands.
 It provides a lot of features, to get the full list check the https://github.com/BoiseComputer/atlas-server-tools/wiki/Command-Line-Usage[Usage] Wiki section.
 
