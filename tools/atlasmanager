@@ -627,6 +627,7 @@ function checkForUpdate(){
     echo -e "Available version:" "$GREEN" $bnumber "$NORMAL"
     echo -e "Your server needs to be restarted in order to receive the latest update."
     echo -e "Run \"atlasmanager update\" to do so"
+    echo -e "Visit http://sail.gg/PCnotes for more information."
     return 1
   else
     tput rc; tput ed;
