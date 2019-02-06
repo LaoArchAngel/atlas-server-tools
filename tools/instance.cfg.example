@@ -9,7 +9,6 @@ serverMap="Ocean"                                                     # server m
 #atlas_TotalConversionMod="496735411"                                 # Uncomment this to specify a total-conversion mod
 atlas_RCONEnabled="True"                                              # Enable RCON Protocol
 atlas_RCONPort="32330"                                                # RCON Port
-atlas_SessionName="ATLAS Server Tools"                                # if your session name needs special characters please use the .ini instead
 atlas_Port="5750"                                                     # ATLAS server port (default 7778)
 atlas_QueryPort="57550"                                               # ATLAS query port (default 27015)
 atlas_ServerPassword=""                                               # ATLAS server password, empty: no password required to login
