@@ -11,7 +11,7 @@ set +o allexport
 
 # Script version
 atlasstVersion='1.8'
-atlasstTag='v1.8.4.2'
+atlasstTag='v1.8.4.3'
 atlasstCommit='79e062e63eed0994bd0b451a9b525a80630de11d'
 atlasstGithubRepo="BoiseComputer/atlas-server-tools"
 atlasstRootUseEnv=''
@@ -1276,18 +1276,22 @@ doRun() {
 
 doRedisStart() {
 if ! $redis_local; then
-	echo "Redis is not hosted locally."
+        echo "Redis is not hosted locally."
 else
-      	redisserverpid="$(getRedisServerPID)"
-	if [ -n "$redisserverpid" ] && kill -0 "$redisserverpid"; then
-		logprint "Start aborted due to Redis server already running - pid: $redisserverpid"
-	else
-		tput sc
-		logprint "The Redis server is starting..."
-		cd $atlasserverroot/AtlasTools/RedisDatabase/
-	       	redis-server "$redis_config_file" --daemonize yes --pidfile "$redis_pid_file"
-		logprint "The server is now running."
-	fi
+        redisserverpid="$(getRedisServerPID)"
+        if [ -n "$redisserverpid" ] && kill -0 "$redisserverpid"; then
+                logprint "Start aborted due to Redis server already running - pid: $redisserverpid"
+        else
+                tput sc
+                logprint "Attempting to start the Redis server..."
+                cd $atlasserverroot/AtlasTools/RedisDatabase/
+                if [ -f "$redis_config_file" ]; then
+                   redis-server "$redis_config_file" --daemonize yes --pidfile "$redis_pid_file"
+                   logprint "Command sent to start Redis."
+                else
+                   logprint "Verify that the path is set correctly to your redis.conf and redis_atlas.pid file in atlasmanager.cfg."
+                fi
+        fi
 fi
 }
 
@@ -1295,7 +1299,13 @@ doRedisStop() {
 if ! $redis_local; then
         echo "Redis is not hosted locally."
 else
-	redis-cli -a "$redis_password" shutdown
+        if [ -f "$redis_config_file" ]; then
+          local redisPassword=$(sed -n 's/\r//g;s/requirepass //p' "$redis_config_file"); #sed 's/\r//g' is being used to remove a line carriage in the redis.conf file.
+          redis-cli -a "$redisPassword" shutdown
+          echo "Command sent to stop Redis."
+        else
+          logprint "Verify that the path is set correctly to your redis.conf and redis_atlas.pid file in atlasmanager.cfg."
+        fi
 fi
 }
 
