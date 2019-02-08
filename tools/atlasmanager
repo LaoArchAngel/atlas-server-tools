@@ -11,8 +11,8 @@ set +o allexport
 
 # Script version
 atlasstVersion='1.8'
-atlasstTag='v1.8.4.3'
-atlasstCommit='79e062e63eed0994bd0b451a9b525a80630de11d'
+atlasstTag='v1.8.4.4'
+atlasstCommit='0d683ea82e0c7f367e0992f0211e07f6f5b45b7c'
 atlasstGithubRepo="BoiseComputer/atlas-server-tools"
 atlasstRootUseEnv=''
 atlasstGlobalCfgFile='/etc/atlasmanager/atlasmanager.cfg'
@@ -772,10 +772,10 @@ function getSavedATLASsDirectory(){
     cisavedir="$(find "${atlasserverroot}" -ipath "${savedir}" | head -n1)"
 
     if [ -n "$cisavedir" ]; then
-      echo -e "  ${NORMAL}[  ${YELLOW}WARN${NORMAL}  ] Saved atlass directory capitalization is inconsistent" >&2
+      echo -e "  ${NORMAL}[  ${YELLOW}WARN${NORMAL}  ] Saved ATLAS directory capitalization is inconsistent" >&2
       savedir="${cisavedir}"
     else
-      echo -e "  ${NORMAL}[ ${RED}ERROR${NORMAL}  ] Saved atlass directory does not exist" >&2
+      echo -e "  ${NORMAL}[ ${RED}ERROR${NORMAL}  ] Saved ATLAS directory does not exist" >&2
       echo ""
       return 1
     fi
@@ -1274,6 +1274,58 @@ doRun() {
   done
 }
 
+#
+# redis function
+#
+
+doRedis() {
+
+  local redisStart=
+  local redisStop=
+  local redisRestart=
+  local redisStatus=
+  local redisBackup=
+
+  for arg in "$@"; do
+    case "$arg" in
+      --start) redisStart=1; ;;
+      --stop) redisStop=1; ;;
+      --restart) redisRestart=1; ;;
+      --status) redisStatus=1; ;;
+      --backup) redisBackup=1; ;;
+      *)
+        echo "Unrecognized option $arg"
+        echo "Try 'atlasmanager -h' or 'atlasmanager --help' for more information."
+        exit 1
+    esac
+  done
+
+    if [ -n "$redisStart" ]; then
+      doRedisStart
+    fi
+
+    if [ -n "$redisStop" ]; then
+      doRedisStop
+    fi
+    
+    if [ -n "$redisRestart" ]; then
+      doRedisStop
+      doRedisStart
+    fi
+
+    if [ -n "$redisStatus" ]; then
+      doRedisStatus
+    fi
+
+    if [ -n "$redisBackup" ]; then
+      doRedisBackup
+    fi
+
+}
+
+#
+# redis start function
+#
 doRedisStart() {
 if ! $redis_local; then
         echo "Redis is not hosted locally."
@@ -1295,6 +1347,9 @@ else
 fi
 }
 
+#
+# redis stop function
+#
 doRedisStop() {
 if ! $redis_local; then
         echo "Redis is not hosted locally."
@@ -1309,6 +1364,9 @@ else
 fi
 }
 
+#
+# redis status function
+#
 doRedisStatus() {
 if ! $redis_local; then
         if isTheRedisServerRunning ;then
@@ -1325,6 +1383,35 @@ else
         else
                 echo -e "$NORMAL" "Redis Server running:" "$RED""No""$NORMAL"
         fi
+fi
+}
+
+#
+# redis backup function
+#
+doRedisBackup() {
+if ! $redis_local; then
+        echo "Redis is not hosted locally."
+else
+  if [ -f "$redis_config_file" ]; then
+    local datestamp=`date +"%Y-%m-%d_%H.%M.%S"`
+    local daystamp=`date +"%Y-%m-%d"`
+    cd "${redis_config_file%/*}"
+    local redisBackupPath=$(sed -n 's/\r//g;s/^dir //p' "$redis_config_file"); #sed 's/\r//g' is being used to remove a line carriage in the redis.conf file.
+    local redisDBFilename=$(sed -n 's/\r//g;s/^dbfilename //p' "$redis_config_file"); #sed 's/\r//g' is being used to remove a line carriage in the redis.conf file.
+    local redisPassword=$(sed -n 's/\r//g;s/^requirepass //p' "$redis_config_file"); #sed 's/\r//g' is being used to remove a line carriage in the redis.conf file.
+    redis-cli -a "$redisPassword" bgsave
+    echo -ne "${NORMAL} Compressing Backup "
+    tar -jcf "${atlasbackupdir}/${daystamp}/${redisDBFilename}.${datestamp}.tar.bz2" "${redisBackupPath}/${redisDBFilename}"
+    if [ -f "${atlasbackupdir}/${daystamp}/${redisDBFilename}.${datestamp}.tar.bz2" ]; then
+      echo -e "${NORMAL}\e[68G[   ${GREEN}OK${NORMAL}   ]"
+    else
+      echo -e "${NORMAL}\e[68G[ ${RED}FAILED${NORMAL} ]"
+    fi
+    echo -e "${NORMAL} Created Backup: ${GREEN} ${redisDBFilename}.${datestamp}.tar.bz2${NORMAL}"
+  else
+    logprint "Verify that the path is set correctly to your redis.conf and redis_atlas.pid file in atlasmanager.cfg."
+  fi
 fi
 }
 
@@ -3366,9 +3453,6 @@ showUsage() {
 	Command               Description
 	upgrade-tools         Check for a new ATLAS Server Tools version and upgrades it if needed
 	uninstall-tools       Uninstall the ATLAS Server Tools
-	redis-start	      Attempts to start Redis
-	redis-stop	      Stops Redis
-	redis-status	      Dispays the status and pid of Redis process
 	useconfig <name>      Sets the default instance for the commands that follow
 	remove-mods <modid>   Remove one or more mods from the steamcmd workshop directory
 	list-instances        Lists all available instances
@@ -3403,6 +3487,13 @@ showUsage() {
 	getpid                Gets the running server PID
 	update                Check for a new ATLAS server version, if needed, stops the server, updates it, and starts it again
 
+	Redis command takes the following options:
+	   --start	      Start the Redis server.
+	   --stop	      Stop the Redis server.
+	   --restart	      Restart the Redis server.
+	   --status	      Shows if Redis is online or offline along with the pid file.
+	   --backup	      Backup current Redis database to the ATLAS backup directory.
+	   
 	Commands which invoke steamcmd take the following options:
 	   --verbose          Show steamcmd output
 	   --spinner          Use a spinner for progress (default)
@@ -3713,6 +3804,9 @@ main(){
         reinstallmod)
           doUninstallMod "${args[@]}"
           doInstallMod "${args[@]}"
+        ;;
+        redis)
+          doRedis "${options[@]}"
         ;;
 	list-mods)
 	  listMods
