@@ -3403,11 +3403,6 @@ showUsage() {
 	getpid                Gets the running server PID
 	update                Check for a new ATLAS server version, if needed, stops the server, updates it, and starts it again
 
-	Redis command takes the following options:
-	   --start	      Will attempt to start the Redis server.
-	   --stop	      Will attempt to stop the Redis server.
-	   --status	      Shows if Redis is online or offline along with the pid file.
-
 	Commands which invoke steamcmd take the following options:
 	   --verbose          Show steamcmd output
 	   --spinner          Use a spinner for progress (default)
