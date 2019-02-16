@@ -1404,6 +1404,7 @@ else
     local redisPort=$(sed -n -e 's/\r//g;s/^port //p' "$redis_config_file"); #sed 's/\r//g' is being used to remove a line carriage in the redis.conf file.
     redis-cli -p "$redisPort" -a "$redisPassword" bgsave
     echo -ne "${NORMAL} Compressing Backup "
+    mkdir -p "${atlasbackupdir}/${daystamp}/
     tar -jcf "${atlasbackupdir}/${daystamp}/${redisDBFilename}.${datestamp}.tar.bz2" "${redisBackupPath}/${redisDBFilename}"
     if [ -f "${atlasbackupdir}/${daystamp}/${redisDBFilename}.${datestamp}.tar.bz2" ]; then
       echo -e "${NORMAL}\e[68G[   ${GREEN}OK${NORMAL}   ]"
