@@ -11,7 +11,7 @@ set +o allexport
 
 # Script version
 atlasstVersion='1.8'
-atlasstTag='v1.8.4.7'
+atlasstTag='v1.8.5'
 atlasstCommit='0d683ea82e0c7f367e0992f0211e07f6f5b45b7c'
 atlasstGithubRepo="BoiseComputer/atlas-server-tools"
 atlasstRootUseEnv=''
@@ -2999,77 +2999,69 @@ doBackup(){
     done
   fi
 
-  # ATLAS server uses Lock-Truncate-Write-Unlock
-  # Unfortunately we can't lock the file, as
-  # ATLAS server uses a non-blocking lock and will
-  # fail to update the file if the lock fails.
-  echo -e "${NORMAL} Copying ATLAS profile files"
-  for f in "${savedir}/"*.atlasprofile; do
-    if [ -f "${f}" ]; then
-      echo -ne "${NORMAL}   ${f##*/} "
+  # Copy atlasmanager.cfg with default instance
+  if [ "$instance" == "$defaultinstance" ]; then
+    echo -ne "${NORMAL} Copying atlasmanager.cfg "
+    cp -p "${atlasstGlobalCfgFile}" "${backupdir}/atlasmanager.cfg"
+    if [ ! -s "${backupdir}/"atlasmanager.cfg ]; then
+      sleep 2
       cp -p "${f}" "${backupdir}/${f##*/}"
-      if [ ! -s "${backupdir}/${f##*/}" ]; then
-        sleep 2
-        cp -p "${f}" "${backupdir}/${f##*/}"
+    fi
+    if [ -f "${backupdir}/"atlasmanager.cfg ]; then
+      echo -e "${NORMAL}\e[68G[   ${GREEN}OK${NORMAL}   ]"
+    else
+      echo -e "${NORMAL}\e[68G[ ${RED}FAILED${NORMAL} ]"
+    fi
+    if [ -z "$atlas_GridConfig" ]; then
+      echo -ne "${NORMAL} Copying ServerGrid.json "
+      cp -p "${atlasserverroot}/ShooterGame/ServerGrid.json" "${backupdir}/ServerGrid.json"
+      if [ -f "${backupdir}/"ServerGrid.json ]; then
+        echo -e "${NORMAL}\e[68G[   ${GREEN}OK${NORMAL}   ]"
+      else
+        echo -e "${NORMAL}\e[68G[ ${RED}FAILED${NORMAL} ]"
       fi
-      # If both attempts fail, server may have
-      # crashed between truncate and write
-      if [[ ! -s "${backupdir}/${f##*/}" && -f "${f%.atlasprofile}.tmpprofile" ]]; then
-        cp -p "${f%.atlasprofile}.tmpprofile" "${backupdir}/${f##*/}"
-      fi
-      if [ -s "${backupdir}/${f##*/}" ]; then
+    else
+      echo -ne "${NORMAL} Copying ${atlas_GridConfig} "
+      cp -p "${atlasserverroot}/ShooterGame/${atlas_GridConfig}" "${backupdir}/${atlas_GridConfig}"
+      if [ -f "${backupdir}/${atlas_GridConfig}" ]; then
         echo -e "${NORMAL}\e[68G[   ${GREEN}OK${NORMAL}   ]"
       else
         echo -e "${NORMAL}\e[68G[ ${RED}FAILED${NORMAL} ]"
       fi
     fi
-  done
+    if [ -z "$atlas_GridConfig" ]; then
+      echo -ne "${NORMAL} Copying ServerGrid Map Images "
+      cp -pR "${atlasserverroot}/ShooterGame/ServerGrid" "${backupdir}/"
+      if [ -f "${backupdir}/ServerGrid/"MapImg.jpg ]; then
+        echo -e "${NORMAL}\e[68G[   ${GREEN}OK${NORMAL}   ]"
+      else
+        echo -e "${NORMAL}\e[68G[ ${RED}FAILED${NORMAL} ]"
+      fi
+    else
+      local gridName=${atlas_GridConfig%".json"}
+      echo -ne "${NORMAL} Copying ${gridName} Map Images "
+      cp -pR "${atlasserverroot}/ShooterGame/${gridName}" "${backupdir}/"
+      if [ -f "${backupdir}/${gridName}"/MapImg.jpg ]; then
+        echo -e "${NORMAL}\e[68G[   ${GREEN}OK${NORMAL}   ]"
+      else
+        echo -e "${NORMAL}\e[68G[ ${RED}FAILED${NORMAL} ]"
+      fi
+    fi
+  fi
 
-  # ATLAS server uses Lock-Truncate-Write-Unlock
-  echo -e "${NORMAL} Copying ATLAS tribe files "
-  for f in "${savedir}/"*.atlastribe; do
-    if [ -f "${f}" ]; then
-      echo -ne "${NORMAL}   ${f##*/} "
-      cp -p "${f}" "${backupdir}/${f##*/}"
-      if [ ! -s "${backupdir}/${f##*/}" ]; then
-        sleep 2
-        cp -p "${f}" "${backupdir}/${f##*/}"
-      fi
-      # If both attempts fail, server may have
-      # crashed between truncate and write
-      if [[ ! -s "${backupdir}/${f##*/}" && -f "${f%.atlastribe}.tmptribe" ]]; then
-        cp -p "${f%.atlastribe}.tmptribe" "${backupdir}/${f##*/}"
-      fi
-      if [ -s "${backupdir}/${f##*/}" ]; then
-        echo -e "${NORMAL}\e[68G[   ${GREEN}OK${NORMAL}   ]"
-      else
-        echo -e "${NORMAL}\e[68G[ ${RED}FAILED${NORMAL} ]"
-      fi
-    fi
-  done
 
-  # ATLAS server uses Lock-Truncate-Write-Unlock
-  echo -e "${NORMAL} Copying ATLAS tribute tribe files "
-  for f in "${savedir}/"*.atlastributetribe; do
-    if [ -f "${f}" ]; then
-      echo -ne "${NORMAL}   ${f##*/} "
-      cp -p "${f}" "${backupdir}/${f##*/}"
-      if [ ! -s "${backupdir}/${f##*/}" ]; then
-        sleep 2
-        cp -p "${f}" "${backupdir}/${f##*/}"
-      fi
-      # If both attempts fail, server may have
-      # crashed between truncate and write
-      if [[ ! -s "${backupdir}/${f##*/}" && -f "${f%.atlastributetribe}.tmptributetribe" ]]; then
-        cp -p "${f%.atlastributetribe}.tmptributetribe" "${backupdir}/${f##*/}"
-      fi
-      if [ -s "${backupdir}/${f##*/}" ]; then
-        echo -e "${NORMAL}\e[68G[   ${GREEN}OK${NORMAL}   ]"
-      else
-        echo -e "${NORMAL}\e[68G[ ${RED}FAILED${NORMAL} ]"
-      fi
-    fi
-  done
+  # Include instance .cfg with backup.
+  echo -ne "${NORMAL} Copying ${instance}.cfg "
+  cp -p "${configfile}" "${backupdir}/${instance}.cfg"
+  if [ ! -s "${backupdir}/"${instance}.cfg ]; then
+    sleep 2
+    cp -p "${f}" "${backupdir}/${f##*/}"
+  fi
+  if [ -f "${backupdir}/"${instance}.cfg ]; then
+    echo -e "${NORMAL}\e[68G[   ${GREEN}OK${NORMAL}   ]"
+  else
+    echo -e "${NORMAL}\e[68G[ ${RED}FAILED${NORMAL} ]"
+  fi
 
   # ATLAS server uses Lock-Truncate-Write-Unlock
   echo -ne "${NORMAL} Copying GameUserSettings.ini "
