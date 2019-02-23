@@ -11,7 +11,7 @@ set +o allexport
 
 # Script version
 atlasstVersion='1.8'
-atlasstTag='v1.8.5.1'
+atlasstTag='v1.8.5.2'
 atlasstCommit='0d683ea82e0c7f367e0992f0211e07f6f5b45b7c'
 atlasstGithubRepo="BoiseComputer/atlas-server-tools"
 atlasstRootUseEnv=''
@@ -1404,6 +1404,7 @@ else
     local redisPort=$(sed -n -e 's/\r//g;s/^port //p' "$redis_config_file"); #sed 's/\r//g' is being used to remove a line carriage in the redis.conf file.
     redis-cli -p "$redisPort" -a "$redisPassword" bgsave
     echo -e "${RED} Please run while server is stopped for max stability${NORMAL}"
+    sleep 2
     mkdir -p "${atlasbackupdir}/${daystamp}/"
     tar -jcf "${atlasbackupdir}/${daystamp}/${redisDBFilename}.${datestamp}.tar.bz2" "${redisBackupPath}/${redisDBFilename}" "$redis_config_file"
     echo -ne "${NORMAL} Compressing Backup "
@@ -3025,6 +3026,24 @@ doBackup(){
       echo -ne "${NORMAL} Copying ${atlas_GridConfig} "
       cp -p "${atlasserverroot}/ShooterGame/${atlas_GridConfig}" "${backupdir}/${atlas_GridConfig}"
       if [ -f "${backupdir}/${atlas_GridConfig}" ]; then
+        echo -e "${NORMAL}\e[68G[   ${GREEN}OK${NORMAL}   ]"
+      else
+        echo -e "${NORMAL}\e[68G[ ${RED}FAILED${NORMAL} ]"
+      fi
+    fi
+    if [ -z "$atlas_GridConfig" ]; then
+      echo -ne "${NORMAL} Copying ServerGridServerOnly.json "
+      cp -p "${atlasserverroot}/ShooterGame/ServerGridServerOnly.json" "${backupdir}/ServerGrid.ServerOnly.json"
+      if [ -f "${backupdir}/"ServerGrid.ServerOnly.json ]; then
+        echo -e "${NORMAL}\e[68G[   ${GREEN}OK${NORMAL}   ]"
+      else
+        echo -e "${NORMAL}\e[68G[ ${RED}FAILED${NORMAL} ]"
+      fi
+    else
+      local gridName=${atlas_GridConfig%".json"}
+      echo -ne "${NORMAL} Copying ${gridName}.ServerOnly.json "
+      cp -p "${atlasserverroot}/ShooterGame/${gridName}.ServerOnly.json" "${backupdir}/${gridName}.ServerOnly.json"
+      if [ -f "${backupdir}/${gridName}.ServerOnly.json" ]; then
         echo -e "${NORMAL}\e[68G[   ${GREEN}OK${NORMAL}   ]"
       else
         echo -e "${NORMAL}\e[68G[ ${RED}FAILED${NORMAL} ]"
