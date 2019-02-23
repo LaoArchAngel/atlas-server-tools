@@ -11,7 +11,7 @@ set +o allexport
 
 # Script version
 atlasstVersion='1.8'
-atlasstTag='v1.8.5.3'
+atlasstTag='v1.8.5.4'
 atlasstCommit='0d683ea82e0c7f367e0992f0211e07f6f5b45b7c'
 atlasstGithubRepo="BoiseComputer/atlas-server-tools"
 atlasstRootUseEnv=''
@@ -1397,6 +1397,15 @@ else
   if [ -f "$redis_config_file" ]; then
     local datestamp=`date +"%Y-%m-%d_%H.%M.%S"`
     local daystamp=`date +"%Y-%m-%d"`
+    local backupdir="${atlasbackupdir}/${datestamp}"
+    local backupdirdaily="${atlasbackupdir}/${daystamp}"
+    local saverootdir="${atlasserverroot}/${atlasserverdir}/Saved"
+    local savedir="$(getSavedATLASsDirectory "${saverootdir}")"
+    mkdir -p "$backupdir"
+    mkdir -p "$backupdirdaily"
+    if [[ -z "$savedir" ]]; then
+      return 1
+    fi
     cd "${redis_config_file%/*}"
     local redisBackupPath=$(sed -n 's/\r//g;s/^dir //p' "$redis_config_file"); #sed 's/\r//g' is being used to remove a line carriage in the redis.conf file.
     local redisDBFilename=$(sed -n 's/\r//g;s/^dbfilename //p' "$redis_config_file"); #sed 's/\r//g' is being used to remove a line carriage in the redis.conf file.
@@ -1405,10 +1414,32 @@ else
     redis-cli -p "$redisPort" -a "$redisPassword" bgsave
     echo -e "${RED} Please run while server is stopped for max stability${NORMAL}"
     sleep 2
-    mkdir -p "${atlasbackupdir}/${daystamp}/"
-    tar -jcf "${atlasbackupdir}/${daystamp}/${redisDBFilename}.${datestamp}.tar.bz2" "${redisBackupPath}/${redisDBFilename}" "$redis_config_file"
+    echo -ne "${NORMAL} Copying ${redisDBFilename} "
+    cp -p "${redisBackupPath}/${redisDBFilename}" "${backupdir}/${redisDBFilename}"
+    if [ ! -s "${backupdir}/${redisDBFilename}" ]; then
+      sleep 2
+      cp -p "${f}" "${backupdir}/${f##*/}"
+    fi
+    if [ -f "${backupdir}/${redisDBFilename}" ]; then
+      echo -e "${NORMAL}\e[68G[   ${GREEN}OK${NORMAL}   ]"
+    else
+      echo -e "${NORMAL}\e[68G[ ${RED}FAILED${NORMAL} ]"
+    fi
+    echo -ne "${NORMAL} Copying redis.conf "
+    cp -p "$redis_config_file" "${backupdir}/"redis.conf
+    if [ ! -s "${backupdir}/"redis.conf ]; then
+      sleep 2
+      cp -p "${f}" "${backupdir}/${f##*/}"
+    fi
+    if [ -f "${backupdir}/"redis.conf ]; then
+      echo -e "${NORMAL}\e[68G[   ${GREEN}OK${NORMAL}   ]"
+    else
+      echo -e "${NORMAL}\e[68G[ ${RED}FAILED${NORMAL} ]"
+    fi
     echo -ne "${NORMAL} Compressing Backup "
-    if [ -f "${atlasbackupdir}/${daystamp}/${redisDBFilename}.${datestamp}.tar.bz2" ]; then
+    tar -jcf "${atlasbackupdir}/${daystamp}/redis.${datestamp}.tar.bz2" -C "${atlasbackupdir}" "${datestamp}"
+    rm -rf ${backupdir}
+    if [ -f "${atlasbackupdir}/${daystamp}/redis.${datestamp}.tar.bz2" ]; then
       echo -e "${NORMAL}\e[68G[   ${GREEN}OK${NORMAL}   ]"
     else
       echo -e "${NORMAL}\e[68G[ ${RED}FAILED${NORMAL} ]"
