@@ -11,7 +11,7 @@ set +o allexport
 
 # Script version
 atlasstVersion='1.8'
-atlasstTag='v1.8.5.2'
+atlasstTag='v1.8.5.3'
 atlasstCommit='0d683ea82e0c7f367e0992f0211e07f6f5b45b7c'
 atlasstGithubRepo="BoiseComputer/atlas-server-tools"
 atlasstRootUseEnv=''
@@ -3032,8 +3032,8 @@ doBackup(){
       fi
     fi
     if [ -z "$atlas_GridConfig" ]; then
-      echo -ne "${NORMAL} Copying ServerGridServerOnly.json "
-      cp -p "${atlasserverroot}/ShooterGame/ServerGridServerOnly.json" "${backupdir}/ServerGrid.ServerOnly.json"
+      echo -ne "${NORMAL} Copying ServerGrid.ServerOnly.json "
+      cp -p "${atlasserverroot}/ShooterGame/ServerGrid.ServerOnly.json" "${backupdir}/ServerGrid.ServerOnly.json"
       if [ -f "${backupdir}/"ServerGrid.ServerOnly.json ]; then
         echo -e "${NORMAL}\e[68G[   ${GREEN}OK${NORMAL}   ]"
       else
