@@ -11,7 +11,7 @@ set +o allexport
 
 # Script version
 atlasstVersion='1.8'
-atlasstTag='v1.8.5.4'
+atlasstTag='v1.8.5.5'
 atlasstCommit='0d683ea82e0c7f367e0992f0211e07f6f5b45b7c'
 atlasstGithubRepo="BoiseComputer/atlas-server-tools"
 atlasstRootUseEnv=''
@@ -924,10 +924,10 @@ if ! $redis_local; then
 			return 1
 		fi
 	else
-	local redis_remote_ip=$(jq '.DatabaseConnections[0].URL' ${atlasserverroot}/ShooterGame/ServerGrid.json)
+	local redis_remote_ip=$(jq '.DatabaseConnections[0].URL' ${atlasserverroot}/ShooterGame/ServerGrid.ServerOnly.json)
 	redis_remote_ip="${redis_remote_ip%\"}";redis_remote_ip="${redis_remote_ip#\"}";
-	local redis_remote_port=$(jq '.DatabaseConnections[0].Port' ${atlasserverroot}/ShooterGame/ServerGrid.json)
-	local redis_remote_password=$(jq '.DatabaseConnections[0].Password' ${atlasserverroot}/ShooterGame/ServerGrid.json)
+	local redis_remote_port=$(jq '.DatabaseConnections[0].Port' ${atlasserverroot}/ShooterGame/ServerGrid.ServerOnly.json)
+	local redis_remote_password=$(jq '.DatabaseConnections[0].Password' ${atlasserverroot}/ShooterGame/ServerGrid.ServerOnly.json)
 	redis_remote_password="${redis_remote_password%\"}";redis_remote_password="${redis_remote_password#\"}";
 	local redis_result="$(redis-cli -a $redis_remote_password -h $redis_remote_ip -p $redis_remote_port ping)"
 		if [[ "$redis_result" == "$redis_success" ]]; then
