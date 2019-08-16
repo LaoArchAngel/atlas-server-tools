@@ -3100,6 +3100,8 @@ doBackup(){
   if [[ ! -z $failedTribes ]]; then
     echo -e "${NORMAL}\e[68G[  ${YELLOW}WARN${NORMAL}  ]"
     echo -ne $failedTribes
+  else
+    echo -e "${NORMAL}\e[68G[   ${GREEN}OK${NORMAL}   ]"
   fi
 
   # Copy player entities files
@@ -3121,6 +3123,8 @@ doBackup(){
   if [[ ! -z $failedEntities ]]; then
     echo -e "${NORMAL}\e[68G[  ${YELLOW}WARN${NORMAL}  ]"
     echo -ne $failedEntities
+  else
+    echo -e "${NORMAL}\e[68G[   ${GREEN}OK${NORMAL}   ]"
   fi
 
 # Copy arkprofile files
@@ -3142,6 +3146,8 @@ doBackup(){
   if [[ ! -z $failedProfiles ]]; then
     echo -e "${NORMAL}\e[68G[  ${YELLOW}WARN${NORMAL}  ]"
     echo -ne $failedProfiles
+  else
+    echo -e "${NORMAL}\e[68G[   ${GREEN}OK${NORMAL}   ]"
   fi
 
   # Copy atlasmanager.cfg with default instance
