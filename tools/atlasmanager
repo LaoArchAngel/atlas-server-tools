@@ -3126,6 +3126,26 @@ doBackup(){
     echo -ne $failedEntities
   fi
 
+# Copy arkprofile files
+  echo -ne "${NORMAL} Copying arkprofile files "
+  failedProfiles=
+  for f in "${savedir}/"*.arkprofile; do
+    cp -p "${f}" "${backupdir}/${f##*/}"
+    
+    if [ ! -f "${backupdir}/${f}" ]; then
+      sleep 2
+      cp -p "${f}" "${backupdir}/${f##*/}"
+    fi
+
+    if [ ! -f "${backupdir}/${f}" ]; then
+      [[ -z $failedProfiles ]] && failedProfiles="${NORMAL}  Failed to backup profiles:"
+      failedProfiles="${failedProfiles}\n    ${f}"
+    fi
+  done
+  if [[ ! -z $failedProfiles ]]; then
+    echo -e "${NORMAL}\e[68G[  ${YELLOW}WARN${NORMAL}  ]"
+    echo -ne $failedProfiles
+  fi
 
   # Copy atlasmanager.cfg with default instance
   if [ "$instance" == "$defaultinstance" ]; then
