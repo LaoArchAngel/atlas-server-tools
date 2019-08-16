@@ -3081,6 +3081,27 @@ doBackup(){
     done
   fi
 
+  # Copy tribe files
+  echo -ne "${NORMAL} Copying tribe files "
+  failedTribes=
+  for f in "${savedir}/"*.arktribe; do
+    cp -p "${f}" "${backupdir}/${f##*/}"
+    
+    if [ ! -f "${backupdir}/${f}" ]; then
+      sleep 2
+      cp -p "${f}" "${backupdir}/${f##*/}"
+    fi
+
+    if [ ! -f "${backupdir}/${f}" ]; then
+      [[ -z $failedTribes ]] && failedTribes="${NORMAL}  Failed to backup tribes:"
+      failedTribes="${failedTribes}\n    ${f}"
+    fi
+  done
+  if [[ ! -z $failedTribes ]]; then
+    echo -e "${NORMAL}\e[68G[  ${YELLOW}WARN${NORMAL}  ]"
+    echo -ne $failedTribes
+  fi
+
   # Copy atlasmanager.cfg with default instance
   if [ "$instance" == "$defaultinstance" ]; then
     echo -ne "${NORMAL} Copying atlasmanager.cfg "
