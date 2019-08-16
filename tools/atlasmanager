@@ -3105,6 +3105,28 @@ doBackup(){
     echo -ne $failedTribes
   fi
 
+  # Copy player entities files
+  echo -ne "${NORMAL} Copying entities files "
+  failedEntities=
+  for f in "${savedir}/"*.playerentities; do
+    cp -p "${f}" "${backupdir}/${f##*/}"
+    
+    if [ ! -f "${backupdir}/${f}" ]; then
+      sleep 2
+      cp -p "${f}" "${backupdir}/${f##*/}"
+    fi
+
+    if [ ! -f "${backupdir}/${f}" ]; then
+      [[ -z $failedEntities ]] && failedEntities="${NORMAL}  Failed to backup tribes:"
+      failedEntities="${failedEntities}\n    ${f}"
+    fi
+  done
+  if [[ ! -z $failedEntities ]]; then
+    echo -e "${NORMAL}\e[68G[  ${YELLOW}WARN${NORMAL}  ]"
+    echo -ne $failedEntities
+  fi
+
+
   # Copy atlasmanager.cfg with default instance
   if [ "$instance" == "$defaultinstance" ]; then
     echo -ne "${NORMAL} Copying atlasmanager.cfg "
