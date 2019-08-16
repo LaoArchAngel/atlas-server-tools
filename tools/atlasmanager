@@ -3114,7 +3114,7 @@ doBackup(){
     fi
 
     if [ ! -f "${backupdir}/${f}" ]; then
-      [[ -z $failedEntities ]] && failedEntities="${NORMAL}  Failed to backup tribes:"
+      [[ -z $failedEntities ]] && failedEntities="${NORMAL}  Failed to backup entities:"
       failedEntities="${failedEntities}\n    ${f}"
     fi
   done
