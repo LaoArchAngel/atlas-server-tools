@@ -3177,8 +3177,8 @@ doBackup(){
   fi
 
 
-   echo -ne "${NORMAL} Copying Game.ini "
-
+  echo -ne "${NORMAL} Copying Game.ini "
+  [ ! -d $savedcfgdir ] && savedcfgdir="${saverootdir}/Config/LinuxServer"
   cp -p "${savedcfgdir}/Game.ini" "${backupdir}/Game.ini"
   if [ ! -s "${backupdir}/Game.ini" ]; then
     sleep 2
